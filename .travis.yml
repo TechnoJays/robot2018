@@ -1,0 +1,12 @@
+language: python
+notifications:
+  slack:
+    on_success: change
+    on_failure: always
+    rooms:
+      secure: J3iAnKBM/s9jl+KI1FtJGgf/WZMEDzejRYnHDxV1nfbimC57z7yDeaUNbpuBuAB0fad0DIG6QjjlFHYnRdvtRPqWgO9IE5oIR/J7DQy4d5nUJ6lEHYhkW7X62mg5FKV0b7hN96gpc5V9zw568z/NhBaRxSEtrctgmITB8tx0qZPSOIQUrNB5ZChM/cvOBmbbZuN64iBToRsrJ75IowEoqGLMycZxitBQIOt+MnIm/65nsEhjKAGg/uIR0xWbRuSVM3vM2vPMLnLnDRDurRy6I6zyj/eN3kJBhK9bIv049L2GNrEER1/DG5lklD2R1UfPHmS0ye2FLIRf2yi9DMpoCzLXS4sk1X8H6NBc0jmr1kfMFN8dHRBl+I2qhnkwMM+wSF6Sv9oeV9yaGmKykluhFX6K4HVwPa3cR57CrgqXOd37Hyiq1cCp7FML69wbizWl9/YIZUxagB8u4ZoAGCXW9S6Kg4+tpgQdlzuL2CeCApdoQAKsTDf3oZANTHM82u67bnS17yv2Ws3A1HBCJMURdmPRjw5cIvoNwU1WfUP4oVUzpmva5qkNCeFSGrRgL23BHi3eUqrxvlfbhLGLmCsiJu+lSN6C/3Oo4IV/L6tWPc/FwBHED9baOtD1u3/vr7BOFv3aJeBhtJuV5o8aoHVmE9MVlWvwFzXEwqD1NptMBM8=
+  email:
+    recipients:
+      - derelle.redmond@gmail.com
+    on_success: never
+    on_failure: change
