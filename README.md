@@ -11,6 +11,13 @@ Southfield High School Team 94 (TechnoJays) robot.
 **External Libraries**:
 * [pyfrc](https://github.com/robotpy/pyfrc)
 
+To install external dependencies for current project state use:
+   
+   ```pip3 install -e .```
+   
+Be sure to follow the [pyfrc instructions](http://pyfrc.readthedocs.org/en/latest/)
+for the latest roboPy setup.
+
 ## Getting Started
 1. Follow the [pyfrc instruction](http://pyfrc.readthedocs.org/en/latest/)
 to install and get started with pyfrc.
@@ -20,8 +27,8 @@ to install and get started with pyfrc.
 ## Running Tests
 1. Make sure, you have ```tox``` installed::
 
-   ```$ pip3 install -U tox```
-   
+    ```pip3 install -e .[tests]```
+
 2. Run all tests across all locally available python versions::
 
    ```$ tox```

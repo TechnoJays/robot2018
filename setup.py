@@ -37,6 +37,6 @@ setup(
     packages=find_packages(exclude=["tests/*"]),  # Required
     install_requires=['pyfrc'],  # Optional
     extras_require={  # Optional
-        'test': ['coverage'],
+        'test': ['tox', 'coverage'],
     }
 )
