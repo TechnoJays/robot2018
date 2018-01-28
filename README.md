@@ -1,4 +1,6 @@
 # Team94 FIRST Robotics FRC Robot Code
+[![Build Status](https://travis-ci.org/TechnoJays/robot2018.svg?branch=master)](https://travis-ci.org/TechnoJays/robot2018)
+
 [FIRST Robotics FRC](http://www.usfirst.org/) is a high 
 school robotics program.  This repository contains the code used in the 
 Southfield High School Team 94 (TechnoJays) robot.
