@@ -13,3 +13,16 @@ Southfield High School Team 94 (TechnoJays) robot.
 1. Follow the [pyfrc instruction](http://pyfrc.readthedocs.org/en/latest/)
 to install and get started with pyfrc.
 2. Copy/install all .py files in the src/robot folder to the robot.
+
+
+## Running Tests
+1. Make sure, you have ```tox``` installed::
+
+   ```$ pip3 install -U tox```
+   
+2. Run all tests across all locally available python versions::
+
+   ```$ tox```
+   
+   ```tox``` is running ```python src/robot.py coverage test``` from
+   [RobotPy Unit Testing](https://robotpy.readthedocs.io/en/stable/guide/testing.html)
