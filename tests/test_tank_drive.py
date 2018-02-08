@@ -79,7 +79,7 @@ def test_init_default(command_default):
     assert command_default.robot is not None
     assert command_default.robot.drivetrain is not None
     assert command_default.name == "TankDrive"
-    assert command_default.timeout is None
+    assert command_default.timeout == -1
     assert command_default._dpad_scaling == 1.0
     assert command_default._stick_scaling == 1.0
 
