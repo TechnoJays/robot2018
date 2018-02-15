@@ -1,7 +1,7 @@
 import configparser
 from wpilib.command.subsystem import Subsystem
 from wpilib.encoder import Encoder
-from wpilib.robotdrive import RobotDrive
+from wpilib.drive import DifferentialDrive
 from wpilib.victorsp import VictorSP
 from wpilib.adxrs450_gyro import ADXRS450_Gyro
 from wpilib.smartdashboard import SmartDashboard
@@ -33,7 +33,9 @@ class Drivetrain(Subsystem):
     _config = None
 
     _left_motor = None
+    _left_motor_invert_multiplier = 1
     _right_motor = None
+    _right_motor_invert_multiplier = 1
     _robot_drive = None
 
     _left_encoder = None
@@ -127,8 +129,8 @@ class Drivetrain(Subsystem):
         return self._gyro is not None
 
     def tank_drive(self, left_speed, right_speed):
-        left = left_speed * self._max_speed
-        right = right_speed * self._max_speed
+        left = left_speed * self._max_speed * self._left_motor_invert_multiplier
+        right = right_speed * self._max_speed * self._right_motor_invert_multiplier
         self._robot_drive.tankDrive(left, right, False)
         self._update_smartdashboard_tank_drive(left_speed, right_speed)
         self.get_gyro_angle()
@@ -170,16 +172,17 @@ class Drivetrain(Subsystem):
             self._left_encoder_type = self._config.getint(self._left_encoder_section, Drivetrain._type_key)
             if self._left_encoder_a_channel and self._left_encoder_b_channel and self._left_encoder_type:
                 self._left_encoder = Encoder(self._left_encoder_a_channel, self._left_encoder_b_channel,
-                                        self._left_encoder_reversed, self._left_encoder_type)
+                                             self._left_encoder_reversed, self._left_encoder_type)
 
         if self._config.getboolean(Drivetrain._right_encoder_section, Drivetrain._enabled_key):
             self._right_encoder_a_channel = self._config.getint(self._right_encoder_section, Drivetrain._a_channel_key)
             self._right_encoder_b_channel = self._config.getint(self._right_encoder_section, Drivetrain._b_channel_key)
-            self._right_encoder_reversed = self._config.getboolean(self._right_encoder_section, Drivetrain._reversed_key)
+            self._right_encoder_reversed = self._config.getboolean(self._right_encoder_section,
+                                                                   Drivetrain._reversed_key)
             self._right_encoder_type = self._config.getint(self._right_encoder_section, Drivetrain._type_key)
             if self._right_encoder_a_channel and self._right_encoder_b_channel and self._right_encoder_type:
                 self._right_encoder = Encoder(self._right_encoder_a_channel, self._right_encoder_b_channel,
-                                        self._right_encoder_reversed, self._right_encoder_type)
+                                              self._right_encoder_reversed, self._right_encoder_type)
 
         if self._config.getboolean(Drivetrain._gyro_section, Drivetrain._enabled_key):
             gyro_channel = self._config.getint(self._gyro_section, Drivetrain._channel_key)
@@ -192,11 +195,11 @@ class Drivetrain(Subsystem):
             self._right_motor = VictorSP(self._config.getint(self._right_motor_section, Drivetrain._channel_key))
 
         if self._left_motor and self._right_motor:
-            self._robot_drive = RobotDrive(self._left_motor, self._right_motor)
+            self._robot_drive = DifferentialDrive(self._left_motor, self._right_motor)
             self._robot_drive.setSafetyEnabled(False)
-            self._robot_drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft,
-                                               self._config.getboolean(Drivetrain._left_motor_section,
-                                                                       Drivetrain._inverted_key))
-            self._robot_drive.setInvertedMotor(RobotDrive.MotorType.kRearRight,
-                                               self._config.getboolean(Drivetrain._right_motor_section,
-                                                                       Drivetrain._inverted_key))
+
+        if self._config.getboolean(Drivetrain._left_motor_section, Drivetrain._inverted_key):
+            self._left_motor_invert_multiplier = -1
+
+        if self._config.getboolean(Drivetrain._right_motor_section, Drivetrain._inverted_key):
+            self._right_motor_invert_multiplier = -1
