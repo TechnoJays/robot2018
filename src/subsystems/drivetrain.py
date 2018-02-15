@@ -33,9 +33,7 @@ class Drivetrain(Subsystem):
     _config = None
 
     _left_motor = None
-    _left_motor_invert_multiplier = 1
     _right_motor = None
-    _right_motor_invert_multiplier = 1
     _robot_drive = None
 
     _left_encoder = None
@@ -129,8 +127,8 @@ class Drivetrain(Subsystem):
         return self._gyro is not None
 
     def tank_drive(self, left_speed, right_speed):
-        left = left_speed * self._max_speed * self._left_motor_invert_multiplier
-        right = right_speed * self._max_speed * self._right_motor_invert_multiplier
+        left = left_speed * self._max_speed
+        right = right_speed * self._max_speed
         self._robot_drive.tankDrive(left, right, False)
         self._update_smartdashboard_tank_drive(left_speed, right_speed)
         self.get_gyro_angle()
@@ -190,16 +188,14 @@ class Drivetrain(Subsystem):
 
         if self._config.getboolean(Drivetrain._left_motor_section, Drivetrain._enabled_key):
             self._left_motor = VictorSP(self._config.getint(self._left_motor_section, Drivetrain._channel_key))
+            self._left_motor.setInverted(self._config.getboolean(
+                Drivetrain._left_motor_section, Drivetrain._inverted_key))
 
         if self._config.getboolean(Drivetrain._right_motor_section, Drivetrain._enabled_key):
             self._right_motor = VictorSP(self._config.getint(self._right_motor_section, Drivetrain._channel_key))
+            self._right_motor.setInverted(self._config.getboolean(
+                Drivetrain._right_motor_section, Drivetrain._inverted_key))
 
         if self._left_motor and self._right_motor:
             self._robot_drive = DifferentialDrive(self._left_motor, self._right_motor)
             self._robot_drive.setSafetyEnabled(False)
-
-        if self._config.getboolean(Drivetrain._left_motor_section, Drivetrain._inverted_key):
-            self._left_motor_invert_multiplier = -1
-
-        if self._config.getboolean(Drivetrain._right_motor_section, Drivetrain._inverted_key):
-            self._right_motor_invert_multiplier = -1
