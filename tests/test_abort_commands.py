@@ -42,7 +42,6 @@ def test_execute(robot, hal_data, drivetrain_default):
     assert abrt is not None
     abrt.initialize()
     abrt.execute()
-    assert hal_data['solenoid'][0]['value'] is True
     assert hal_data['pwm'][1]['value'] == 0.0
     assert hal_data['pwm'][2]['value'] == 0.0
     assert hal_data['pwm'][3]['value'] == 0.0

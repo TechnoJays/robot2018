@@ -41,7 +41,7 @@ def test_init_default(command_default):
     assert command_default.robot.drivetrain is not None
     assert command_default._stopwatch is not None
     assert command_default.name == "DriveTime"
-    assert command_default.timeout is None
+    assert command_default.timeout == -1
     assert command_default._duration == 5
     assert command_default._speed == 1.0
 
