@@ -3,6 +3,7 @@ from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
 
+
 class Feeder(Subsystem):
     _left_motor_section = "FeederMotorLeft"
     _right_motor_section = "FeederMotorRight"
@@ -18,6 +19,7 @@ class Feeder(Subsystem):
     _left_motor_channel = None
     _right_motor_channel = None
     _switch_channel = None
+
     _left_motor_inverted = None
     _right_motor_inverted = None
 
@@ -30,12 +32,12 @@ class Feeder(Subsystem):
     _pickup_speed_scale = 0.0
     _shoot_speed_scale = 0.0
 
-    def __init__(self, robot, name = None, configfile = '/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot, name=None, configfile='/home/lvuser/configs/subsystems.ini'):
         self._robot = robot
         self._config = configparser.ConfigParser()
         self._config.read(configfile)
         self.init_components()
-        super().__init__(name = name)
+        super().__init__(name=name)
 
     def has_cube(self):
         if self._switch:
