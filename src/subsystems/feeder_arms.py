@@ -1,8 +1,8 @@
-# TODO: put stuff here
 import configparser
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
+
 
 class FeederArms(Subsystem):
     _left_motor_section = "FeederArmLeftMotor"
