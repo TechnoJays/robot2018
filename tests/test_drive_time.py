@@ -66,9 +66,9 @@ def test_initialize(command_default):
 
 @pytest.mark.parametrize("speed,left_ex_speed,right_ex_speed", [
     (0.0, 0.0, 0.0),
-    (0.5, 0.5, -0.5),
+    (0.5,  0.5306122448979592,  -0.5306122448979592),
     (1.0, 1.0, -1.0),
-    (-0.5, -0.5, 0.5),
+    (-0.5,  -0.5306122448979592,  0.5306122448979592),
     (-1.0, -1.0, 1.0),
 ])
 def test_execute(robot, drivetrain_default, hal_data, speed, left_ex_speed, right_ex_speed):
@@ -101,7 +101,7 @@ def isclose(a, b, rel_tol=0.1, abs_tol=0.0):
 
 
 @pytest.mark.parametrize("duration,speed,timeout,left_ex_speed,right_ex_speed", [
-    (0.5, 0.5, 5.0, 0.5, -0.5),
+    (0.5, 0.5, 5.0, 0.5306122448979592, -0.5306122448979592),
     (2.0, 1.0, 15.0, 1.0, -1.0),
     # (5.0, 1.0, 1.0, 1.0, -1.0), # Timeouts don't seem to work in testing
 ])

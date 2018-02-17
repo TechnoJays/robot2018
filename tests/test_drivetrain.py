@@ -129,9 +129,9 @@ def test_drivetrain_3_4_speed(hal_data, robot, left_speed, right_speed, left_ex_
 
 @pytest.mark.parametrize("left_speed,right_speed,left_ex_speed,right_ex_speed", [
     (0.0, 0.0, 0.0, 0.0),
-    (0.5, 0.5, 0.5, -0.5),
+    (0.5, 0.5, 0.5306122448979592, -0.5306122448979592),
     (1.0, 1.0, 1.0, -1.0),
-    (-0.5, -0.5, -0.5, 0.5),
+    (-0.5, -0.5, -0.5306122448979592, 0.5306122448979592),
     (-1.0, -1.0, -1.0, 1.0),
 ])
 def test_drivetrain_full_speed(hal_data, robot, left_speed, right_speed, left_ex_speed, right_ex_speed):
