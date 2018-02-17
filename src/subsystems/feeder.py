@@ -1,36 +1,38 @@
 import configparser
+from configparser import ConfigParser
+from wpilib import IterativeRobot
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
 
 
 class Feeder(Subsystem):
-    _left_motor_section = "FeederMotorLeft"
-    _right_motor_section = "FeederMotorRight"
-    _general_section = "FeederGeneral"
-    _switch_section = "FeederSwitch"
+    _left_motor_section: str = "FeederMotorLeft"
+    _right_motor_section: str = "FeederMotorRight"
+    _general_section: str = "FeederGeneral"
+    _switch_section: str = "FeederSwitch"
 
-    _enabled_key = "ENABLED"
-    _channel_key = "CHANNEL"
-    _inverted_key = "INVERTED"
-    _pickup_speed_scale_key = "PICKUP_SPEED"
-    _shoot_speed_scale_key = "SHOOT_SPEED"
+    _enabled_key: str = "ENABLED"
+    _channel_key: str = "CHANNEL"
+    _inverted_key: str = "INVERTED"
+    _pickup_speed_scale_key: str = "PICKUP_SPEED"
+    _shoot_speed_scale_key: str = "SHOOT_SPEED"
 
-    _left_motor_channel = None
-    _right_motor_channel = None
-    _switch_channel = None
+    _left_motor_channel: int = None
+    _right_motor_channel: int = None
+    _switch_channel: int = None
 
-    _left_motor_inverted = None
-    _right_motor_inverted = None
+    _left_motor_inverted: bool = None
+    _right_motor_inverted: bool = None
 
-    _robot = None
-    _config = None
-    _left_motor = None
-    _right_motor = None
-    _switch = None
+    _robot: IterativeRobot = None
+    _config: ConfigParser = None
+    _left_motor: Talon = None
+    _right_motor: Talon = None
+    _switch: DigitalInput = None
 
-    _pickup_speed_scale = 0.0
-    _shoot_speed_scale = 0.0
+    _pickup_speed_scale: float = None
+    _shoot_speed_scale: float = None
 
     def __init__(self, robot, name=None, configfile='/home/lvuser/configs/subsystems.ini'):
         self._robot = robot
@@ -41,16 +43,16 @@ class Feeder(Subsystem):
 
     # TODO: add default command
 
-    def has_cube(self):
+    def has_cube(self) -> bool:
         if self._switch:
             return not self._switch.get()
         else:
             return False
 
-    def spin_feeder(self, speed, left_should_spin, right_should_spin):
-        if speed > 0:
+    def spin_feeder(self, speed: float, left_should_spin: bool, right_should_spin: bool):
+        if speed > 0.0:
             speed = speed * self._shoot_speed_scale
-        if speed < 0:
+        if speed < 0.0:
             speed = speed * self._pickup_speed_scale
         if self._left_motor and left_should_spin:
             self._left_motor.set(speed)

@@ -1,39 +1,41 @@
 import configparser
+from configparser import ConfigParser
+from wpilib import IterativeRobot
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
 
 
 class FeederArms(Subsystem):
-    _left_motor_section = "FeederArmLeftMotor"
-    _right_motor_section = "FeederArmRightMotor"
-    _general_section = "FeederArmGeneral"
-    _upper_switch_section = "FeederArmUpperSwitch"
-    _lower_switch_section = "FeederArmLowerSwitch"
+    _left_motor_section: str = "FeederArmLeftMotor"
+    _right_motor_section: str = "FeederArmRightMotor"
+    _general_section: str = "FeederArmGeneral"
+    _upper_switch_section: str = "FeederArmUpperSwitch"
+    _lower_switch_section: str = "FeederArmLowerSwitch"
 
-    _enabled_key = "ENABLED"
-    _channel_key = "CHANNEL"
-    _inverted_key = "INVERTED"
-    _move_speed_scale_key = "MOVE_SPEED"
+    _enabled_key: str = "ENABLED"
+    _channel_key: str = "CHANNEL"
+    _inverted_key: str = "INVERTED"
+    _move_speed_scale_key: str = "MOVE_SPEED"
 
-    _left_motor_channel = None
-    _right_motor_channel = None
-    _upper_switch_channel = None
-    _lower_switch_channel = None
+    _left_motor_channel: int = None
+    _right_motor_channel: int = None
+    _upper_switch_channel: int = None
+    _lower_switch_channel: int = None
 
-    _left_motor_inverted = False
-    _right_motor_inverted = False
+    _left_motor_inverted: bool = False
+    _right_motor_inverted: bool = False
 
-    _robot = None
-    _config = None
-    _left_motor = None
-    _right_motor = None
-    _upper_switch = None
-    _lower_switch = None
+    _robot: IterativeRobot = None
+    _config: ConfigParser = None
+    _left_motor: Talon = None
+    _right_motor: Talon = None
+    _upper_switch: DigitalInput = None
+    _lower_switch: DigitalInput = None
 
-    _move_speed_scale = 0.0
+    _move_speed_scale: float = None
 
-    def __init__(self, robot, name=None, configfile='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot: IterativeRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         self._robot = robot
         self._config = configparser.ConfigParser()
         self._config.read(configfile)
@@ -42,19 +44,19 @@ class FeederArms(Subsystem):
 
     # TODO: add default command
 
-    def upright_position(self):
+    def upright_position(self) -> bool:
         if self._upper_switch:
             return not self._upper_switch.get()
         else:
             return False
 
-    def lowered_position(self):
+    def lowered_position(self) -> bool:
         if self._lower_switch:
             return not self._lower_switch.get()
         else:
             return False
 
-    def move_feeder_arm(self, speed):
+    def move_feeder_arm(self, speed: float):
         speed = speed * self._move_speed_scale
         if self._left_motor and self._right_motor:
             self._left_motor.set(speed)
