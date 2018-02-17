@@ -31,8 +31,8 @@ class Feeder(Subsystem):
     _right_motor: Talon = None
     _switch: DigitalInput = None
 
-    _pickup_speed_scale: float = None
-    _shoot_speed_scale: float = None
+    _pickup_speed_scale: float = 0.0
+    _shoot_speed_scale: float = 0.0
 
     def __init__(self, robot: IterativeRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         self._robot = robot
@@ -54,10 +54,11 @@ class Feeder(Subsystem):
             speed = speed * self._shoot_speed_scale
         if speed < 0.0:
             speed = speed * self._pickup_speed_scale
-        if self._left_motor and left_should_spin:
-            self._left_motor.set(speed)
-        if self._right_motor and right_should_spin:
-            self._right_motor.set(speed)
+        if speed != 0.0:
+            if self._left_motor and left_should_spin:
+                self._left_motor.set(speed)
+            if self._right_motor and right_should_spin:
+                self._right_motor.set(speed)
 
     def init_components(self):
         self._pickup_speed_scale = self._config.getfloat(self._general_section, self._pickup_speed_scale_key)

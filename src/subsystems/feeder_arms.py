@@ -33,7 +33,7 @@ class FeederArms(Subsystem):
     _upper_switch: DigitalInput = None
     _lower_switch: DigitalInput = None
 
-    _move_speed_scale: float = None
+    _move_speed_scale: float = 0.0
 
     def __init__(self, robot: IterativeRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         self._robot = robot
@@ -57,10 +57,11 @@ class FeederArms(Subsystem):
             return False
 
     def move_feeder_arm(self, speed: float):
-        speed = speed * self._move_speed_scale
-        if self._left_motor and self._right_motor:
-            self._left_motor.set(speed)
-            self._right_motor.set(speed)
+        if speed != 0.0:
+            speed = speed * self._move_speed_scale
+            if self._left_motor and self._right_motor:
+                self._left_motor.set(speed)
+                self._right_motor.set(speed)
 
     def init_components(self):
         self._move_speed_scale = self._config.getfloat(self._general_section, self._move_speed_scale_key)
