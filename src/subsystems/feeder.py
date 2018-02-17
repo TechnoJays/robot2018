@@ -34,7 +34,7 @@ class Feeder(Subsystem):
     _pickup_speed_scale: float = None
     _shoot_speed_scale: float = None
 
-    def __init__(self, robot, name=None, configfile='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot: IterativeRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         self._robot = robot
         self._config = configparser.ConfigParser()
         self._config.read(configfile)
