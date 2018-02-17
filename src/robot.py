@@ -3,11 +3,13 @@ import wpilib
 from commands.do_nothing import DoNothing
 from oi import OI
 from subsystems.drivetrain import Drivetrain
+from subsystems.elevator import Elevator
 
 
 class MyRobot(wpilib.IterativeRobot):
     oi = None
     drivetrain = None
+    elevator = None
     autonomous_command = None
 
     def autonomousInit(self):
@@ -44,6 +46,7 @@ class MyRobot(wpilib.IterativeRobot):
         """
         self.oi = OI(self)
         self.drivetrain = Drivetrain(self)
+        self.elevator = Elevator(self)
         self.oi.setup_button_bindings()
         wpilib.CameraServer.launch()
 

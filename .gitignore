@@ -103,3 +103,6 @@ ENV/
 # Mac junk
 .DS_Store
 
+# PyCharm
+.idea/
+
