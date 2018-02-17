@@ -137,9 +137,10 @@ class Drivetrain(Subsystem):
         self._update_smartdashboard_sensors()
 
     def arcade_drive(self, linear_distance, turn_angle, squared_inputs=True):
+        determined_turn_angle = self._modify_turn_angle(turn_angle)
         if self._robot_drive:
-            self._robot_drive.arcadeDrive(linear_distance, turn_angle, squared_inputs)
-        self._update_smartdashboard_arcade_drive(linear_distance, turn_angle)
+            self._robot_drive.arcadeDrive(linear_distance, determined_turn_angle, squared_inputs)
+        self._update_smartdashboard_arcade_drive(linear_distance, determined_turn_angle)
         self.get_gyro_angle()
         self.get_left_encoder_value()
         self.get_right_encoder_value()
@@ -199,3 +200,9 @@ class Drivetrain(Subsystem):
         if self._left_motor and self._right_motor:
             self._robot_drive = DifferentialDrive(self._left_motor, self._right_motor)
             self._robot_drive.setSafetyEnabled(False)
+
+    def _modify_turn_angle(self, turn_angle: float) -> float:
+        """Method to support switch from pyfrc RobotDrive to pyfrc DifferentialDrive
+        see: https://robotpy.readthedocs.io/projects/wpilib/en/latest/wpilib.drive/DifferentialDrive.html#wpilib.drive.differentialdrive.DifferentialDrive
+        """
+        return -1 * turn_angle
