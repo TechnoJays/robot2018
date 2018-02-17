@@ -8,7 +8,8 @@ class FeederArms(Subsystem):
     _left_motor_section = "FeederArmLeftMotor"
     _right_motor_section = "FeederArmRightMotor"
     _general_section = "FeederArmGeneral"
-    _switch_section = "FeederArmSwitch"
+    _upper_switch_section = "FeederArmUpperSwitch"
+    _lower_switch_section = "FeederArmLowerSwitch"
 
     _enabled_key = "ENABLED"
     _channel_key = "CHANNEL"
@@ -17,7 +18,8 @@ class FeederArms(Subsystem):
 
     _left_motor_channel = None
     _right_motor_channel = None
-    _switch_channel = None
+    _upper_switch_channel = None
+    _lower_switch_channel = None
 
     _left_motor_inverted = False
     _right_motor_inverted = False
@@ -26,7 +28,8 @@ class FeederArms(Subsystem):
     _config = None
     _left_motor = None
     _right_motor = None
-    _switch = None
+    _upper_switch = None
+    _lower_switch = None
 
     _move_speed_scale = 0.0
 
@@ -38,8 +41,14 @@ class FeederArms(Subsystem):
         super().__init__(name=name)
 
     def upright_position(self):
-        if self._switch:
-            return not self._switch.get()
+        if self._upper_switch:
+            return not self._upper_switch.get()
+        else:
+            return False
+
+    def lowered_position(self):
+        if self._lower_switch:
+            return not self._lower_switch.get()
         else:
             return False
 
@@ -68,8 +77,14 @@ class FeederArms(Subsystem):
             if self._right_motor_inverted:
                 self._right_motor.setInverted(self._right_motor_inverted)
 
-        if self._config.getboolean(FeederArms._switch_section, FeederArms._enabled_key):
-            self._switch_channel = self._config.getint(self._switch_section, self._channel_key)
+        if self._config.getboolean(FeederArms._upper_switch_section, FeederArms._enabled_key):
+            self._upper_switch_channel = self._config.getint(self._upper_switch_section, self._channel_key)
 
-        if self._switch_channel:
-            self._switch = DigitalInput(self._switch_channel)
+        if self._upper_switch_channel:
+            self._upper_switch = DigitalInput(self._upper_switch_channel)
+
+        if self._config.getboolean(FeederArms._lower_switch_section, FeederArms._enabled_key):
+            self._lower_switch_channel = self._config.getint(self._lower_switch_section, self._channel_key)
+
+        if self._lower_switch_channel:
+            self._lower_switch = DigitalInput(self._lower_switch_channel)
