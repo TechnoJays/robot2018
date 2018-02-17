@@ -39,6 +39,8 @@ class Feeder(Subsystem):
         self.init_components()
         super().__init__(name=name)
 
+    # TODO: add default command
+
     def has_cube(self):
         if self._switch:
             return not self._switch.get()

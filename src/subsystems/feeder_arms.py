@@ -40,6 +40,8 @@ class FeederArms(Subsystem):
         self.init_components()
         super().__init__(name=name)
 
+    # TODO: add default command
+
     def upright_position(self):
         if self._upper_switch:
             return not self._upper_switch.get()
