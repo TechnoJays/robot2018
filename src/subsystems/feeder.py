@@ -50,11 +50,11 @@ class Feeder(Subsystem):
             return False
 
     def spin_feeder(self, speed: float, left_should_spin: bool, right_should_spin: bool):
-        if speed > 0.0:
-            speed = speed * self._shoot_speed_scale
-        if speed < 0.0:
-            speed = speed * self._pickup_speed_scale
         if speed != 0.0:
+            if speed > 0.0:
+                speed = speed * self._shoot_speed_scale
+            if speed < 0.0:
+                speed = speed * self._pickup_speed_scale
             if self._left_motor and left_should_spin:
                 self._left_motor.set(speed)
             if self._right_motor and right_should_spin:
