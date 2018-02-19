@@ -26,13 +26,14 @@ def drivetrain_default(robot):
     return Drivetrain(robot, None, '../tests/test_configs/drivetrain_default.ini')
 
 
-def test_drivetrain_default(drivetrain_default, hal_data):
+def test_drivetrain_default(drivetrain_default):
     assert drivetrain_default is not None
     assert drivetrain_default._left_motor is not None
     assert drivetrain_default._right_motor is not None
     assert drivetrain_default._robot_drive is not None
     assert drivetrain_default.is_encoder_enabled() is True
     assert drivetrain_default.is_gyro_enabled() is True
+    assert drivetrain_default.get_arcade_rotation_modifier() == -1
 
 
 def test_drivetrain_channels_0_1(hal_data, robot):
@@ -129,9 +130,9 @@ def test_drivetrain_3_4_speed(hal_data, robot, left_speed, right_speed, left_ex_
 
 @pytest.mark.parametrize("left_speed,right_speed,left_ex_speed,right_ex_speed", [
     (0.0, 0.0, 0.0, 0.0),
-    (0.5, 0.5, 0.5, -0.5),
+    (0.5, 0.5, 0.5306122448979592, -0.5306122448979592),
     (1.0, 1.0, 1.0, -1.0),
-    (-0.5, -0.5, -0.5, 0.5),
+    (-0.5, -0.5, -0.5306122448979592, 0.5306122448979592),
     (-1.0, -1.0, -1.0, 1.0),
 ])
 def test_drivetrain_full_speed(hal_data, robot, left_speed, right_speed, left_ex_speed, right_ex_speed):
