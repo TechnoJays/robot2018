@@ -81,9 +81,9 @@ def test_initialize(command_default):
 @pytest.mark.parametrize("initial_count,count_change,threshold,speed,left_ex_speed,right_ex_speed", [
     (0, 0, 5, 1.0, -1.0, 1.0),
     (100, 400, 10, 1.0, -1.0, 1.0),
-    (500, 9500, 50, 0.5, -0.5, 0.5),
+    (500, 9500, 50, 0.5, -0.5306122448979592, 0.5306122448979592),
     (10000, -5000, 100, 1.0, 1.0, -1.0),
-    (500, -500, 2, 0.5, 0.5, -0.5),
+    (500, -500, 2, 0.5, 0.5306122448979592, -0.5306122448979592),
 ])
 def test_execute(robot, drivetrain_default, hal_data, initial_count, count_change, threshold, speed,
                  left_ex_speed, right_ex_speed):
@@ -129,9 +129,9 @@ def test_end(command_default, hal_data):
 @pytest.mark.parametrize("initial_count,count_change,threshold,speed,left_ex_speed,right_ex_speed", [
     (0, 0, 5, 1.0, -1.0, 1.0),
     (100, 400, 10, 1.0, -1.0, 1.0),
-    (500, 9500, 50, 0.5, -0.5, 0.5),
+    (500, 9500, 50, 0.5, -0.5306122448979592, 0.5306122448979592),
     (10000, -5000, 100, 1.0, 1.0, -1.0),
-    (500, -500, 2, 0.5, 0.5, -0.5),
+    (500, -500, 2, 0.5, 0.5306122448979592, -0.5306122448979592),
 ])
 def test_command_full(robot, drivetrain_default, hal_data, initial_count, count_change, threshold, speed,
                  left_ex_speed, right_ex_speed):
