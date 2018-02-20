@@ -13,6 +13,7 @@ class FeederArms(Subsystem):
     _raised_switch_section: str = "FeederArmRaisedSwitch"
     _lowered_switch_section: str = "FeederArmLoweredSwitch"
     _closed_switch_section: str = "FeederArmClosedSwitch"
+    _open_switch_section: str = "FeederArmOpenSwitch"
 
     _enabled_key: str = "ENABLED"
     _channel_key: str = "CHANNEL"
@@ -24,6 +25,7 @@ class FeederArms(Subsystem):
     _raised_switch_channel: int = None
     _lowered_switch_channel: int = None
     _closed_switch_channel: int = None
+    _open_switch_channel: int = None
 
     _vertical_motor_inverted: bool = False
     _lateral_motor_inverted: bool = False
@@ -35,6 +37,7 @@ class FeederArms(Subsystem):
     _raised_switch: DigitalInput = None
     _lowered_switch: DigitalInput = None
     _closed_switch: DigitalInput = None
+    _open_switch: DigitalInput = None
 
     _move_speed_scale: float = 1.0
 
@@ -65,11 +68,17 @@ class FeederArms(Subsystem):
         else:
             return False
 
+    def is_open(self) -> bool:
+        if self._open_switch:
+            return not self._open_switch.get()
+        else:
+            return False
+
     def move_arm_laterally(self, speed: float):
         if self._lateral_motor:
             if speed < 0.0 and not self.is_closed():
                 self._lateral_motor.set(speed * self._move_speed_scale)
-            elif speed > 0.0:
+            elif speed > 0.0 and not self.is_open():
                 self._lateral_motor.set(speed * self._move_speed_scale)
             else:
                 self._lateral_motor.set(0.0)
@@ -108,18 +117,20 @@ class FeederArms(Subsystem):
 
         if self._config.getboolean(FeederArms._raised_switch_section, FeederArms._enabled_key):
             self._raised_switch_channel = self._config.getint(self._raised_switch_section, self._channel_key)
-
-        if self._raised_switch_channel:
-            self._raised_switch = DigitalInput(self._raised_switch_channel)
+            if self._raised_switch_channel:
+                self._raised_switch = DigitalInput(self._raised_switch_channel)
 
         if self._config.getboolean(FeederArms._lowered_switch_section, FeederArms._enabled_key):
             self._lowered_switch_channel = self._config.getint(self._lowered_switch_section, self._channel_key)
-
-        if self._lowered_switch_channel:
-            self._lowered_switch = DigitalInput(self._lowered_switch_channel)
+            if self._lowered_switch_channel:
+                self._lowered_switch = DigitalInput(self._lowered_switch_channel)
 
         if self._config.getboolean(FeederArms._closed_switch_section, FeederArms._enabled_key):
             self._closed_switch_channel = self._config.getint(self._closed_switch_section, self._channel_key)
+            if self._closed_switch_channel:
+                self._closed_switch = DigitalInput(self._closed_switch_channel)
 
-        if self._closed_switch_channel:
-            self._closed_switch = DigitalInput(self._closed_switch_channel)
+        if self._config.getboolean(FeederArms._open_switch_section, FeederArms._enabled_key):
+            self._open_switch_channel = self._config.getint(self._open_switch_section, self._channel_key)
+            if self._open_switch_channel:
+                self._open_switch = DigitalInput(self._open_switch_channel)

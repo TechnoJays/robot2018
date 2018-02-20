@@ -49,16 +49,24 @@ class Feeder(Subsystem):
         else:
             return False
 
-    def spin_feeder(self, speed: float, left_should_spin: bool, right_should_spin: bool):
-        if speed != 0.0:
-            if speed > 0.0:
-                speed = speed * self._shoot_speed_scale
-            if speed < 0.0:
-                speed = speed * self._pickup_speed_scale
+    def feed_cube(self, speed: float, left_should_spin: bool, right_should_spin: bool):
+        if speed > 0.0:
+            speed = speed * self._shoot_speed_scale
             if self._left_motor and left_should_spin:
                 self._left_motor.set(speed)
             if self._right_motor and right_should_spin:
                 self._right_motor.set(speed)
+        elif speed < 0.0 and not self.has_cube():
+            speed = speed * self._pickup_speed_scale
+            if self._left_motor and left_should_spin:
+                self._left_motor.set(speed)
+            if self._right_motor and right_should_spin:
+                self._right_motor.set(speed)
+        else:
+            speed = 0.0
+            self._left_motor.set(speed)
+            self._right_motor.set(speed)
+
 
     def init_components(self):
         self._pickup_speed_scale = self._config.getfloat(self._general_section, self._pickup_speed_scale_key)
