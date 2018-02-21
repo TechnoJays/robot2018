@@ -10,12 +10,11 @@ from commands.set_elevator_to_position import SetElevatorToPosition
 from commands.shoot_load import ShootLoad
 from commands.turn_degrees import TurnDegrees
 from commands.turn_time import TurnTime
-from robot import MyRobot
 
 
 class Goal(Enum):
     switch = 1, "DriveLineToSwitch", "PlaceSwitch"
-    scale = 2, "DriveLineToScale" "PlaceScale"
+    scale = 2, "DriveLineToScale", "PlaceScale"
 
     def __new__(cls, value, drive_section, place_section):
         obj = object.__new__(cls)
@@ -51,7 +50,7 @@ class FieldConfig(Enum):
 class AutoPlaceCube(CommandGroup):
 
     def __init__(self,
-                 robot: MyRobot,
+                 robot,
                  field_config: FieldConfig,
                  starting_position: StartingPosition):
         super().__init__()
@@ -86,14 +85,14 @@ class CrossLine(CommandGroup):
     _DISTANCE_THRESHOLD = "DRIVE_ENCODER_THRESHOLD"
     _DISTANCE = "DRIVE_ENCODER"
 
-    _robot: MyRobot = None
+    _robot = None
 
     _drive_speed: float = None
     _drive_distance: int = None
     _drive_threshold: int = None
     _drive_time: float = None
 
-    def __init__(self, robot: MyRobot, config_path: str="/home/lvuser/py/configs/autonomous.ini"):
+    def __init__(self, robot, config_path: str="/home/lvuser/py/configs/autonomous.ini"):
         super().__init__()
         self._robot = robot
         config = ConfigParser()
@@ -133,7 +132,7 @@ class PlaceCube(CommandGroup):
     _RELEASE_TIME_KEY = "RELEASE_TIME"
     _RELEASE_SPEED_KEY = "RELEASE_SPEED"
 
-    _robot: MyRobot = None
+    _robot = None
 
     _drive_speed: float = None
     _drive_distance: int = None
@@ -149,7 +148,7 @@ class PlaceCube(CommandGroup):
     _shoot_speed: float = None
 
     def __init__(self,
-                 robot: MyRobot,
+                 robot,
                  goal: Goal,
                  config_path: str="/home/lvuser/py/configs/autonomous.ini"):
         super().__init__()
@@ -236,7 +235,7 @@ class DriveLineToGoal(CommandGroup):
     _TURN_TIME = "TURN_TIME"
     _TURN_DEGREES = "TURN_DEGREES"
 
-    _robot: MyRobot = None
+    _robot = None
     _turn_direction: TurnDirection = None
 
     _drive_speed: float = None
@@ -253,7 +252,7 @@ class DriveLineToGoal(CommandGroup):
     _turn_time: float = None
 
     def __init__(self,
-                 robot: MyRobot,
+                 robot,
                  direction: TurnDirection,
                  goal: Goal,
                  config_path: str="/home/lvuser/py/configs/autonomous.ini"):
