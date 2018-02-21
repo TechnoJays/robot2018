@@ -6,6 +6,7 @@ from subsystems.drivetrain import Drivetrain
 from subsystems.elevator import Elevator
 from subsystems.arm import Arm
 from subsystems.feeder import Feeder
+from subsystems.winch import Winch
 
 
 class MyRobot(wpilib.IterativeRobot):
@@ -14,6 +15,7 @@ class MyRobot(wpilib.IterativeRobot):
     elevator = None
     arm = None
     feeder = None
+    winch = None
     autonomous_command = None
 
     def autonomousInit(self):
@@ -53,6 +55,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.elevator = Elevator(self)
         self.arm = Arm(self)
         self.feeder = Feeder(self)
+        self.winch = Winch(self)
         self.oi.setup_button_bindings()
         wpilib.CameraServer.launch()
 

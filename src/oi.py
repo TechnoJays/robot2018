@@ -136,9 +136,7 @@ class OI:
 
     def _init_joystick(self, driver):
         config_section = "JoyConfig" + str(driver)
-        stick = wpilib.Joystick(self._config.getint(config_section, "PORT"),
-                                self._config.getint(config_section, "AXES"),
-                                self._config.getint(config_section, "BUTTONS"))
+        stick = wpilib.Joystick(self._config.getint(config_section, "PORT"))
         return stick
 
     def _init_joystick_binding(self):
