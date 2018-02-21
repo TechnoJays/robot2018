@@ -1,7 +1,7 @@
 import configparser
 from wpilib.command.subsystem import Subsystem
 from wpilib.encoder import Encoder
-from wpilib.robotdrive import RobotDrive
+from wpilib.drive import DifferentialDrive
 from wpilib.victorsp import VictorSP
 from wpilib.adxrs450_gyro import ADXRS450_Gyro
 from wpilib.smartdashboard import SmartDashboard
@@ -20,6 +20,7 @@ class Drivetrain(Subsystem):
     _a_channel_key = "A_CHANNEL"
     _b_channel_key = "B_CHANNEL"
     _inverted_key = "INVERTED"
+    _arcade_drive_rotation_inverted_key = "ARCADE_DRIVE_ROTATION_INVERTED"
     _type_key = "TYPE"
     _channel_key = "CHANNEL"
     _reversed_key = "REVERSED"
@@ -28,6 +29,8 @@ class Drivetrain(Subsystem):
     _dpad_scaling_key = "DPAD_SCALING"
 
     _max_speed = 0
+    # Default arcade drive rotation modifier to -1 for DifferentialDrive
+    _arcade_rotation_modifier = -1
 
     _robot = None
     _config = None
@@ -126,6 +129,9 @@ class Drivetrain(Subsystem):
     def is_gyro_enabled(self):
         return self._gyro is not None
 
+    def get_arcade_rotation_modifier(self) -> float:
+        return self._arcade_rotation_modifier
+
     def tank_drive(self, left_speed, right_speed):
         left = left_speed * self._max_speed
         right = right_speed * self._max_speed
@@ -137,13 +143,20 @@ class Drivetrain(Subsystem):
         self._update_smartdashboard_sensors()
 
     def arcade_drive(self, linear_distance, turn_angle, squared_inputs=True):
+        determined_turn_angle = self._modify_turn_angle(turn_angle)
         if self._robot_drive:
-            self._robot_drive.arcadeDrive(linear_distance, turn_angle, squared_inputs)
-        self._update_smartdashboard_arcade_drive(linear_distance, turn_angle)
+            self._robot_drive.arcadeDrive(linear_distance, determined_turn_angle, squared_inputs)
+        self._update_smartdashboard_arcade_drive(linear_distance, determined_turn_angle)
         self.get_gyro_angle()
         self.get_left_encoder_value()
         self.get_right_encoder_value()
         self._update_smartdashboard_sensors()
+
+    def _modify_turn_angle(self, turn_angle: float) -> float:
+        """Method to support switch from pyfrc RobotDrive to pyfrc DifferentialDrive
+        see: https://robotpy.readthedocs.io/projects/wpilib/en/latest/wpilib.drive/DifferentialDrive.html#wpilib.drive.differentialdrive.DifferentialDrive
+        """
+        return self._arcade_rotation_modifier * turn_angle
 
     def _update_smartdashboard_tank_drive(self, left, right):
         SmartDashboard.putNumber("Drivetrain Left Speed", left)
@@ -163,6 +176,9 @@ class Drivetrain(Subsystem):
         self._modifier_scaling = self._config.getfloat(self._general_section, Drivetrain._modifier_scaling_key)
         self._dpad_scaling = self._config.getfloat(self._general_section, Drivetrain._dpad_scaling_key)
 
+        if not self._config.getboolean(self._general_section, "ARCADE_DRIVE_ROTATION_INVERTED"):
+            self._arcade_rotation_modifier = 1
+
         if self._config.getboolean(Drivetrain._left_encoder_section, Drivetrain._enabled_key):
             self._left_encoder_a_channel = self._config.getint(self._left_encoder_section, Drivetrain._a_channel_key)
             self._left_encoder_b_channel = self._config.getint(self._left_encoder_section, Drivetrain._b_channel_key)
@@ -170,16 +186,17 @@ class Drivetrain(Subsystem):
             self._left_encoder_type = self._config.getint(self._left_encoder_section, Drivetrain._type_key)
             if self._left_encoder_a_channel and self._left_encoder_b_channel and self._left_encoder_type:
                 self._left_encoder = Encoder(self._left_encoder_a_channel, self._left_encoder_b_channel,
-                                        self._left_encoder_reversed, self._left_encoder_type)
+                                             self._left_encoder_reversed, self._left_encoder_type)
 
         if self._config.getboolean(Drivetrain._right_encoder_section, Drivetrain._enabled_key):
             self._right_encoder_a_channel = self._config.getint(self._right_encoder_section, Drivetrain._a_channel_key)
             self._right_encoder_b_channel = self._config.getint(self._right_encoder_section, Drivetrain._b_channel_key)
-            self._right_encoder_reversed = self._config.getboolean(self._right_encoder_section, Drivetrain._reversed_key)
+            self._right_encoder_reversed = self._config.getboolean(self._right_encoder_section,
+                                                                   Drivetrain._reversed_key)
             self._right_encoder_type = self._config.getint(self._right_encoder_section, Drivetrain._type_key)
             if self._right_encoder_a_channel and self._right_encoder_b_channel and self._right_encoder_type:
                 self._right_encoder = Encoder(self._right_encoder_a_channel, self._right_encoder_b_channel,
-                                        self._right_encoder_reversed, self._right_encoder_type)
+                                              self._right_encoder_reversed, self._right_encoder_type)
 
         if self._config.getboolean(Drivetrain._gyro_section, Drivetrain._enabled_key):
             gyro_channel = self._config.getint(self._gyro_section, Drivetrain._channel_key)
@@ -187,16 +204,14 @@ class Drivetrain(Subsystem):
 
         if self._config.getboolean(Drivetrain._left_motor_section, Drivetrain._enabled_key):
             self._left_motor = VictorSP(self._config.getint(self._left_motor_section, Drivetrain._channel_key))
+            self._left_motor.setInverted(self._config.getboolean(
+                Drivetrain._left_motor_section, Drivetrain._inverted_key))
 
         if self._config.getboolean(Drivetrain._right_motor_section, Drivetrain._enabled_key):
             self._right_motor = VictorSP(self._config.getint(self._right_motor_section, Drivetrain._channel_key))
+            self._right_motor.setInverted(self._config.getboolean(
+                Drivetrain._right_motor_section, Drivetrain._inverted_key))
 
         if self._left_motor and self._right_motor:
-            self._robot_drive = RobotDrive(self._left_motor, self._right_motor)
+            self._robot_drive = DifferentialDrive(self._left_motor, self._right_motor)
             self._robot_drive.setSafetyEnabled(False)
-            self._robot_drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft,
-                                               self._config.getboolean(Drivetrain._left_motor_section,
-                                                                       Drivetrain._inverted_key))
-            self._robot_drive.setInvertedMotor(RobotDrive.MotorType.kRearRight,
-                                               self._config.getboolean(Drivetrain._right_motor_section,
-                                                                       Drivetrain._inverted_key))

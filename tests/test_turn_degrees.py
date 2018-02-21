@@ -79,9 +79,9 @@ def test_initialize(command_default):
 @pytest.mark.parametrize("initial_angle,target_angle,threshold,speed,left_ex_speed,right_ex_speed", [
     (0.0, 0.0, 1.0, 1.0, -1.0, -1.0),
     (10.0, 30.0, 2.0, 1.0, -1.0, -1.0),
-    (20.0, 60.0, 5.0, 0.5, -0.5, -0.5),
+    (20.0, 60.0, 5.0, 0.5, -0.5306122448979592, -0.5306122448979592),
     (20.0, -60.0, 10.0, 1.0, 1.0, 1.0),
-    (10.0, -30.0, 2.0, 0.5, 0.5, 0.5),
+    (10.0, -30.0, 2.0, 0.5, 0.5306122448979592, 0.5306122448979592),
 ])
 def test_execute(robot, drivetrain_default, hal_data, initial_angle, target_angle, threshold, speed,
                  left_ex_speed, right_ex_speed):

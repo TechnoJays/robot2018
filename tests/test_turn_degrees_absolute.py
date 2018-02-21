@@ -2,7 +2,6 @@ import pytest
 from commands.turn_degrees_absolute import TurnDegreesAbsolute
 from subsystems.drivetrain import Drivetrain
 
-
 """
 hal_data['pwm'] looks like this:
 [{
@@ -44,7 +43,7 @@ def update_gyro(hal_data, command):
 
 
 def isclose(a, b, rel_tol=0.1, abs_tol=0.0):
-    return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+    return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
 
 
 def test_init_default(command_default):
@@ -78,9 +77,9 @@ def test_initialize(command_default):
 @pytest.mark.parametrize("initial_angle,target_angle,threshold,speed,left_ex_speed,right_ex_speed", [
     (0.0, 0.0, 1.0, 1.0, -1.0, -1.0),
     (10.0, 30.0, 2.0, 1.0, -1.0, -1.0),
-    (20.0, 60.0, 5.0, 0.5, -0.5, -0.5),
+    (20.0, 60.0, 5.0, 0.5, -0.5306122448979592, -0.5306122448979592),
     (20.0, -60.0, 10.0, 1.0, 1.0, 1.0),
-    (10.0, -30.0, 2.0, 0.5, 0.5, 0.5),
+    (10.0, -30.0, 2.0, 0.5, 0.5306122448979592, 0.5306122448979592),
 ])
 def test_execute(robot, drivetrain_default, hal_data, initial_angle, target_angle, threshold, speed,
                  left_ex_speed, right_ex_speed):
@@ -119,7 +118,6 @@ def test_interrupted(command_default):
 def test_end(command_default, hal_data):
     assert hal_data['pwm'][1]['value'] == 0.0
     assert hal_data['pwm'][2]['value'] == 0.0
-
 
 # @pytest.mark.parametrize("initial_angle,target_angle,threshold,speed,left_ex_speed,right_ex_speed", [
 #     (0.0, 0.0, 1.0, 1.0, 0.0, 0.0),
