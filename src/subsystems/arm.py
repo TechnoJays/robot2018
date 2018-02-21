@@ -1,19 +1,20 @@
 import configparser
 from configparser import ConfigParser
-from wpilib import IterativeRobot
+from robot import MyRobot
+from commands.move_arms_vertically import MoveArmsVertically
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
 
 
-class FeederArms(Subsystem):
-    _vertical_motor_section: str = "FeederArmVerticalMotor"
-    _lateral_motor_section: str = "FeederArmLateralMotor"
-    _general_section: str = "FeederArmGeneral"
-    _raised_switch_section: str = "FeederArmRaisedSwitch"
-    _lowered_switch_section: str = "FeederArmLoweredSwitch"
-    _closed_switch_section: str = "FeederArmClosedSwitch"
-    _open_switch_section: str = "FeederArmOpenSwitch"
+class Arm(Subsystem):
+    _vertical_motor_section: str = "ArmVerticalMotor"
+    _lateral_motor_section: str = "ArmLateralMotor"
+    _general_section: str = "ArmGeneral"
+    _raised_switch_section: str = "ArmRaisedSwitch"
+    _lowered_switch_section: str = "ArmLoweredSwitch"
+    _closed_switch_section: str = "ArmClosedSwitch"
+    _open_switch_section: str = "ArmOpenSwitch"
 
     _enabled_key: str = "ENABLED"
     _channel_key: str = "CHANNEL"
@@ -30,7 +31,7 @@ class FeederArms(Subsystem):
     _vertical_motor_inverted: bool = False
     _lateral_motor_inverted: bool = False
 
-    _robot: IterativeRobot = None
+    _robot: MyRobot = None
     _config: ConfigParser = None
     _vertical_motor: Talon = None
     _lateral_motor: Talon = None
@@ -41,14 +42,17 @@ class FeederArms(Subsystem):
 
     _move_speed_scale: float = 1.0
 
-    def __init__(self, robot: IterativeRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot: MyRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+        super().__init__(name=name)
         self._robot = robot
         self._config = configparser.ConfigParser()
         self._config.read(configfile)
         self.init_components()
-        super().__init__(name=name)
 
     # TODO: add default command
+
+    def initDefaultCommand(self):
+        self.setDefaultCommand(MoveArmsVertically(self._robot))
 
     def is_raised(self) -> bool:
         if self._raised_switch:
@@ -84,7 +88,7 @@ class FeederArms(Subsystem):
                 self._lateral_motor.set(0.0)
 
 
-    def move_arm_vertically(self, speed: float):
+    def move_arms_vertically(self, speed: float):
         if self._vertical_motor:
             if speed > 0.0 and not self.is_raised():
                 self._vertical_motor.set(speed * self._move_speed_scale)
@@ -97,11 +101,11 @@ class FeederArms(Subsystem):
         if self._config.getfloat(self._general_section, self._move_speed_scale_key) != None:
             self._move_speed_scale = self._config.getfloat(self._general_section, self._move_speed_scale_key)
 
-        if self._config.getboolean(FeederArms._lateral_motor_section, FeederArms._enabled_key):
+        if self._config.getboolean(Arm._lateral_motor_section, Arm._enabled_key):
             self._lateral_motor_channel = self._config.getint(self._lateral_motor_section, self._channel_key)
             self._lateral_motor_inverted = self._config.getboolean(self._lateral_motor_section, self._inverted_key)
 
-        if self._config.getboolean(FeederArms._vertical_motor_section, FeederArms._enabled_key):
+        if self._config.getboolean(Arm._vertical_motor_section, Arm._enabled_key):
             self._vertical_motor_channel = self._config.getint(self._vertical_motor_section, self._channel_key)
             self._vertical_motor_inverted = self._config.getboolean(self._vertical_motor_section, self._inverted_key)
 
@@ -115,22 +119,22 @@ class FeederArms(Subsystem):
             if self._lateral_motor:
                 self._lateral_motor.setInverted(self._lateral_motor_inverted)
 
-        if self._config.getboolean(FeederArms._raised_switch_section, FeederArms._enabled_key):
+        if self._config.getboolean(Arm._raised_switch_section, Arm._enabled_key):
             self._raised_switch_channel = self._config.getint(self._raised_switch_section, self._channel_key)
             if self._raised_switch_channel:
                 self._raised_switch = DigitalInput(self._raised_switch_channel)
 
-        if self._config.getboolean(FeederArms._lowered_switch_section, FeederArms._enabled_key):
+        if self._config.getboolean(Arm._lowered_switch_section, Arm._enabled_key):
             self._lowered_switch_channel = self._config.getint(self._lowered_switch_section, self._channel_key)
             if self._lowered_switch_channel:
                 self._lowered_switch = DigitalInput(self._lowered_switch_channel)
 
-        if self._config.getboolean(FeederArms._closed_switch_section, FeederArms._enabled_key):
+        if self._config.getboolean(Arm._closed_switch_section, Arm._enabled_key):
             self._closed_switch_channel = self._config.getint(self._closed_switch_section, self._channel_key)
             if self._closed_switch_channel:
                 self._closed_switch = DigitalInput(self._closed_switch_channel)
 
-        if self._config.getboolean(FeederArms._open_switch_section, FeederArms._enabled_key):
+        if self._config.getboolean(Arm._open_switch_section, Arm._enabled_key):
             self._open_switch_channel = self._config.getint(self._open_switch_section, self._channel_key)
             if self._open_switch_channel:
                 self._open_switch = DigitalInput(self._open_switch_channel)

@@ -1,10 +1,14 @@
 import configparser
+import os
 from configparser import ConfigParser
-from wpilib import IterativeRobot
+from robot import MyRobot
+from commands.feed_cube import FeedCube
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
+from wpilib.smartdashboard import SmartDashboard
 
+# TODO update smartdashboard with has_cube() status
 
 class Feeder(Subsystem):
     _left_motor_section: str = "FeederMotorLeft"
@@ -22,10 +26,10 @@ class Feeder(Subsystem):
     _right_motor_channel: int = None
     _switch_channel: int = None
 
-    _left_motor_inverted: bool = None
-    _right_motor_inverted: bool = None
+    _left_motor_inverted: bool = False
+    _right_motor_inverted: bool = False
 
-    _robot: IterativeRobot = None
+    _robot: MyRobot = None
     _config: ConfigParser = None
     _left_motor: Talon = None
     _right_motor: Talon = None
@@ -34,39 +38,41 @@ class Feeder(Subsystem):
     _pickup_speed_scale: float = 0.0
     _shoot_speed_scale: float = 0.0
 
-    def __init__(self, robot: IterativeRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot: MyRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+        super().__init__(name=name)
         self._robot = robot
         self._config = configparser.ConfigParser()
-        self._config.read(configfile)
+        self._config.read(os.path.join(os.getcwd(), configfile))
         self.init_components()
-        super().__init__(name=name)
+        self.update_smartdashboard()
 
-    # TODO: add default command
+    def initDefaultCommand(self):
+        self.setDefaultCommand(FeedCube(self._robot))
 
     def has_cube(self) -> bool:
         if self._switch:
-            return not self._switch.get()
+            return self._switch.get()
         else:
             return False
 
-    def feed_cube(self, speed: float, left_should_spin: bool, right_should_spin: bool):
-        if speed > 0.0:
-            speed = speed * self._shoot_speed_scale
-            if self._left_motor and left_should_spin:
+    def feed_cube(self, speed: float):
+        if self._left_motor and self._right_motor:
+            if speed > 0.0:
+                speed = speed * self._shoot_speed_scale
                 self._left_motor.set(speed)
-            if self._right_motor and right_should_spin:
                 self._right_motor.set(speed)
-        elif speed < 0.0 and not self.has_cube():
-            speed = speed * self._pickup_speed_scale
-            if self._left_motor and left_should_spin:
+            elif speed < 0.0 and not self.has_cube():
+                speed = speed * self._pickup_speed_scale
                 self._left_motor.set(speed)
-            if self._right_motor and right_should_spin:
                 self._right_motor.set(speed)
-        else:
-            speed = 0.0
-            self._left_motor.set(speed)
-            self._right_motor.set(speed)
+            else:
+                speed = 0.0
+                self._left_motor.set(speed)
+                self._right_motor.set(speed)
+        self.update_smartdashboard()
 
+    def update_smartdashboard(self):
+        SmartDashboard.putBoolean("Cube Acquired", self.has_cube())
 
     def init_components(self):
         self._pickup_speed_scale = self._config.getfloat(self._general_section, self._pickup_speed_scale_key)
