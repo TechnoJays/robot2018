@@ -47,6 +47,9 @@ class OI:
     _auto_program_chooser = None
     _starting_chooser = None
 
+    FULL_SPEED_AHEAD: float = 1.0
+    FULL_SPEED_REVERSE: float = 1.0
+
     def __init__(self, robot, configfile='/home/lvuser/py/configs/joysticks.ini'):
         self.robot = robot
         self._config = configparser.ConfigParser()
@@ -63,14 +66,14 @@ class OI:
         #release_gear_a_button.whileHeld(ReleaseGear(self.robot))
 
         open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
-        open_arm_button.whileHeld(MoveArmLaterally(self.robot, 1.0))
+        open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
         close_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
-        close_arm_button.whileHeld(MoveArmLaterally(self.robot, -1.0))
+        close_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_REVERSE))
 
         raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
-        raise_arms_button.whileHeld(MoveArmsVertically(self.robot, 1.0))
+        raise_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_AHEAD))
         lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
-        lower_arms_button.whileHeld(MoveArmsVertically(self.robot, -1.0))
+        lower_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_REVERSE))
 
     def get_axis(self, user, axis):
         """Read axis value for specified controller/axis.
