@@ -37,7 +37,7 @@ class Arm(Subsystem):
     _raised_switch: DigitalInput = None
     _lowered_switch: DigitalInput = None
     _closed_switch: DigitalInput = None
-    _open_switch: DigitalInput = None
+    _opened_switch: DigitalInput = None
 
     _move_speed_scale: float = 1.0
 
@@ -48,32 +48,30 @@ class Arm(Subsystem):
         self._config.read(configfile)
         self.init_components()
 
-    # TODO: add default command
-
     def initDefaultCommand(self):
         self.setDefaultCommand(MoveArmsVertically(self._robot))
 
     def is_raised(self) -> bool:
         if self._raised_switch:
-            return not self._raised_switch.get()
+            return self._raised_switch.get()
         else:
             return False
 
     def is_lowered(self) -> bool:
         if self._lowered_switch:
-            return not self._lowered_switch.get()
+            return self._lowered_switch.get()
         else:
             return False
 
     def is_closed(self) -> bool:
         if self._closed_switch:
-            return not self._closed_switch.get()
+            return self._closed_switch.get()
         else:
             return False
 
     def is_open(self) -> bool:
-        if self._open_switch:
-            return not self._open_switch.get()
+        if self._opened_switch:
+            return self._opened_switch.get()
         else:
             return False
 
@@ -136,4 +134,4 @@ class Arm(Subsystem):
         if self._config.getboolean(Arm._open_switch_section, Arm._enabled_key):
             self._open_switch_channel = self._config.getint(self._open_switch_section, self._channel_key)
             if self._open_switch_channel:
-                self._open_switch = DigitalInput(self._open_switch_channel)
+                self._opened_switch = DigitalInput(self._open_switch_channel)

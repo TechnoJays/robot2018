@@ -24,7 +24,7 @@ class MoveArmsVertically(Command):
         elif self._arm_speed < 0.0:
             return self.robot.arm.is_lowered()
         else:
-            return self.isTimedOut()
+            return False
 
     def end(self):
         """Called once after isFinished returns true"""
