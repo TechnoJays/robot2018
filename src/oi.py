@@ -5,6 +5,7 @@ from wpilib.sendablechooser import SendableChooser
 from wpilib.buttons.joystickbutton import JoystickButton
 from commands.move_arm_laterally import MoveArmLaterally
 from commands.move_arms_vertically import MoveArmsVertically
+from commands.move_winch import MoveWinch
 
 class JoystickAxis(object):
     """Enumerates joystick axis."""
@@ -73,6 +74,11 @@ class OI:
         raise_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_AHEAD))
         lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
         lower_arms_button.whileHeld(MoveArmsVertically(self.robot, -self.FULL_SPEED_AHEAD))
+
+        raise_winch_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.LEFTBUMPER)
+        raise_winch_button.whileHeld(MoveWinch(self.robot, self.FULL_SPEED_AHEAD))
+        lower_winch_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.LEFTTRIGGER)
+        lower_winch_button.whileHeld(MoveWinch(self.robot, -self.FULL_SPEED_AHEAD))
 
     def get_axis(self, user, axis):
         """Read axis value for specified controller/axis.
