@@ -4,6 +4,8 @@ from commands.do_nothing import DoNothing
 from oi import OI
 from subsystems.drivetrain import Drivetrain
 from subsystems.elevator import Elevator
+from subsystems.arm import Arm
+from subsystems.feeder import Feeder
 from subsystems.winch import Winch
 
 
@@ -11,6 +13,8 @@ class MyRobot(wpilib.IterativeRobot):
     oi = None
     drivetrain = None
     elevator = None
+    arm = None
+    feeder = None
     winch = None
     autonomous_command = None
 
@@ -49,6 +53,8 @@ class MyRobot(wpilib.IterativeRobot):
         self.oi = OI(self)
         self.drivetrain = Drivetrain(self)
         self.elevator = Elevator(self)
+        self.arm = Arm(self)
+        self.feeder = Feeder(self)
         self.winch = Winch(self)
         self.oi.setup_button_bindings()
         wpilib.CameraServer.launch()
