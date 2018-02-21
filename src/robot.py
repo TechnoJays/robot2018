@@ -1,5 +1,7 @@
 from wpilib import command
 import wpilib
+
+from commands.autonomous import StartingPosition, CrossLine, AutoPlaceCube, FieldConfig
 from commands.do_nothing import DoNothing
 from oi import OI
 from subsystems.drivetrain import Drivetrain
@@ -21,15 +23,16 @@ class MyRobot(wpilib.IterativeRobot):
     def autonomousInit(self):
         # Schedule the autonomous command
         self.drivetrain.reset_gyro_angle()
-        starting_position = self.oi.get_position()
+
+        # Determine starting position and filed config
+        starting_position = StartingPosition[self.oi.get_position()]
+        game_message = wpilib.DriverStation.getGameSpecificMessage()
+        field_config = FieldConfig[game_message]
+
         if self.oi.get_auto_choice() == 1:
-            #self.autonomous_command = AutonomousCrossLine(self)
-            #self.autonomous_command.set_match_configuration(starting_position)
-            self.autonomous_command = DoNothing(self)
+            self.autonomous_command = CrossLine(self)
         elif self.oi.get_auto_choice() == 2:
-            #self.autonomous_command = AutonomousHangCenter(self)
-            #self.autonomous_command.set_match_configuration(starting_position)
-            self.autonomous_command = DoNothing(self)
+            self.autonomous_command = AutoPlaceCube(self, field_config, starting_position)
         else:
             self.autonomous_command = DoNothing(self)
         self.autonomous_command.start()
