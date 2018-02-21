@@ -315,13 +315,13 @@ class DriveLineToGoal(CommandGroup):
         self._turn_time = config_parser.getfloat(goal.drive_config_section, self._TURN_TIME)
 
 
-def use_drive_encoder(robot: MyRobot) -> bool:
+def use_drive_encoder(robot) -> bool:
     return robot.drivetrain.is_encoder_enabled()
 
 
-def use_drive_gyro(robot: MyRobot) -> bool:
+def use_drive_gyro(robot) -> bool:
     return robot.drivetrain.is_gyro_enabled()
 
 
-def use_elevator_encoder(robot: MyRobot) -> bool:
+def use_elevator_encoder(robot) -> bool:
     return robot.elevator.is_encoder_enabled()
