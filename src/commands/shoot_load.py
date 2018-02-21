@@ -8,7 +8,7 @@ class ShootLoad(Command):
     _duration = None
     _speed = None
 
-    def __init__(self, robot, duration, speed: float=0.0,, name=None, timeout=5):
+    def __init__(self, robot, duration, speed: float=0.0, name=None, timeout=5):
         super().__init__(name, timeout)
         self.robot = robot
         self._stopwatch = Stopwatch()
