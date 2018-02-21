@@ -24,7 +24,7 @@ class ShootLoad(Command):
     def execute(self):
         """Called repeatedly when this Command is scheduled to run"""
         speed = self._speed
-        self._robot.feeder.feed_cube(speed)
+        self.robot.feeder.feed_cube(speed)
         return Command.execute(self)
 
     def isFinished(self):
@@ -34,7 +34,7 @@ class ShootLoad(Command):
     def end(self):
         """Called once after isFinished returns true"""
         self._stopwatch.stop()
-        self._robot.feeder.feed_cube(0.0)
+        self.robot.feeder.feed_cube(0.0)
 
     def interrupted(self):
         """Called when another command which requires one or more of the same subsystems is scheduled to run"""
