@@ -2,7 +2,7 @@ import configparser
 from wpilib.command.subsystem import Subsystem
 from wpilib.encoder import Encoder
 from wpilib.smartdashboard import SmartDashboard
-from wpilib.spark import Spark
+from wpilib.victorsp import VictorSP
 from commands.move_winch import MoveWinch
 
 
@@ -62,7 +62,7 @@ class Winch(Subsystem):
         if self._config.getboolean(Winch._motor_section, Winch._enabled_key):
             motor_channel = self._config.getint(Winch._motor_section, Winch._channel_key)
             motor_inverted = self._config.getboolean(Winch._motor_section, Winch._inverted_key)
-            self._motor = Spark(motor_channel)
+            self._motor = VictorSP(motor_channel)
             if self._motor:
                 self._motor.setInverted(motor_inverted)
 
