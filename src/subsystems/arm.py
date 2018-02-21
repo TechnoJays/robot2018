@@ -1,4 +1,4 @@
-import configparser
+import os
 from configparser import ConfigParser
 from commands.move_arms_vertically import MoveArmsVertically
 from wpilib.command.subsystem import Subsystem
@@ -44,11 +44,11 @@ class Arm(Subsystem):
     def __init__(self, robot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
-        self._config = configparser.ConfigParser()
-        self._config.read(configfile)
-        self.init_components()
+        self._config = ConfigParser()
+        self._config.read(os.path.join(os.getcwd(), configfile))
+        self._init_components()
 
-    def initDefaultCommand(self):
+    def _initDefaultCommand(self):
         self.setDefaultCommand(MoveArmsVertically(self._robot))
 
     def is_raised(self) -> bool:
@@ -75,7 +75,7 @@ class Arm(Subsystem):
         else:
             return False
 
-    def move_arm_laterally(self, speed: float):
+    def move_arm_laterally(self, speed: float) -> None:
         if self._lateral_motor:
             if speed < 0.0 and not self.is_closed():
                 self._lateral_motor.set(speed * self._move_speed_scale)
@@ -85,7 +85,7 @@ class Arm(Subsystem):
                 self._lateral_motor.set(0.0)
 
 
-    def move_arms_vertically(self, speed: float):
+    def move_arms_vertically(self, speed: float) -> None:
         if self._vertical_motor:
             if speed > 0.0 and not self.is_raised():
                 self._vertical_motor.set(speed * self._move_speed_scale)
@@ -94,8 +94,8 @@ class Arm(Subsystem):
             else:
                 self._lateral_motor.set(0.0)
 
-    def init_components(self):
-        if self._config.getfloat(self._general_section, self._move_speed_scale_key) != None:
+    def _init_components(self) -> None:
+        if self._config.getfloat(self._general_section, self._move_speed_scale_key) is not None:
             self._move_speed_scale = self._config.getfloat(self._general_section, self._move_speed_scale_key)
 
         if self._config.getboolean(Arm._lateral_motor_section, Arm._enabled_key):

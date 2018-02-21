@@ -1,4 +1,3 @@
-import configparser
 import os
 from configparser import ConfigParser
 from commands.feed_cube import FeedCube
@@ -7,7 +6,6 @@ from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
 from wpilib.smartdashboard import SmartDashboard
 
-# TODO update smartdashboard with has_cube() status
 
 class Feeder(Subsystem):
     _left_motor_section: str = "FeederMotorLeft"
@@ -40,10 +38,10 @@ class Feeder(Subsystem):
     def __init__(self, robot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
-        self._config = configparser.ConfigParser()
+        self._config = ConfigParser()
         self._config.read(os.path.join(os.getcwd(), configfile))
-        self.init_components()
-        self.update_smartdashboard()
+        self._init_components()
+        self._update_smartdashboard()
 
     def initDefaultCommand(self):
         self.setDefaultCommand(FeedCube(self._robot))
@@ -70,10 +68,10 @@ class Feeder(Subsystem):
                 self._right_motor.set(speed)
         self.update_smartdashboard()
 
-    def update_smartdashboard(self):
+    def _update_smartdashboard(self):
         SmartDashboard.putBoolean("Cube Acquired", self.has_cube())
 
-    def init_components(self):
+    def _init_components(self):
         self._pickup_speed_scale = self._config.getfloat(self._general_section, self._pickup_speed_scale_key)
         self._shoot_speed_scale = self._config.getfloat(self._general_section, self._shoot_speed_scale_key)
 

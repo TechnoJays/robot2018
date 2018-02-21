@@ -48,7 +48,6 @@ class OI:
     _starting_chooser = None
 
     FULL_SPEED_AHEAD: float = 1.0
-    FULL_SPEED_REVERSE: float = 1.0
 
     def __init__(self, robot, configfile='/home/lvuser/py/configs/joysticks.ini'):
         self.robot = robot
@@ -68,12 +67,12 @@ class OI:
         open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
         open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
         close_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
-        close_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_REVERSE))
+        close_arm_button.whileHeld(MoveArmLaterally(self.robot, -self.FULL_SPEED_AHEAD))
 
         raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
         raise_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_AHEAD))
         lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
-        lower_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_REVERSE))
+        lower_arms_button.whileHeld(MoveArmsVertically(self.robot, -self.FULL_SPEED_AHEAD))
 
     def get_axis(self, user, axis):
         """Read axis value for specified controller/axis.
