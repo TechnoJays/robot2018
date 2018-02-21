@@ -1,12 +1,11 @@
 from wpilib.command.command import Command
-from robot import MyRobot
 from oi import UserController, JoystickAxis
 
 class FeedCube(Command):
 
-    def __init__(self, robot: MyRobot, speed: float=0.0, name=None, timeout=5):
+    def __init__(self, robot, speed: float=0.0, name=None, timeout=5):
         super().__init__(name, timeout)
-        self.robot: MyRobot = robot
+        self.robot = robot
         self._feeder_speed: float = speed
         self.requires(robot.feeder)
 

@@ -1,7 +1,6 @@
 import configparser
 import os
 from configparser import ConfigParser
-from robot import MyRobot
 from commands.feed_cube import FeedCube
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
@@ -29,7 +28,7 @@ class Feeder(Subsystem):
     _left_motor_inverted: bool = False
     _right_motor_inverted: bool = False
 
-    _robot: MyRobot = None
+    _robot = None
     _config: ConfigParser = None
     _left_motor: Talon = None
     _right_motor: Talon = None
@@ -38,7 +37,7 @@ class Feeder(Subsystem):
     _pickup_speed_scale: float = 0.0
     _shoot_speed_scale: float = 0.0
 
-    def __init__(self, robot: MyRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
         self._config = configparser.ConfigParser()

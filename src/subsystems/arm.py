@@ -1,6 +1,5 @@
 import configparser
 from configparser import ConfigParser
-from robot import MyRobot
 from commands.move_arms_vertically import MoveArmsVertically
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
@@ -31,7 +30,7 @@ class Arm(Subsystem):
     _vertical_motor_inverted: bool = False
     _lateral_motor_inverted: bool = False
 
-    _robot: MyRobot = None
+    _robot = None
     _config: ConfigParser = None
     _vertical_motor: Talon = None
     _lateral_motor: Talon = None
@@ -42,7 +41,7 @@ class Arm(Subsystem):
 
     _move_speed_scale: float = 1.0
 
-    def __init__(self, robot: MyRobot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
         self._config = configparser.ConfigParser()
