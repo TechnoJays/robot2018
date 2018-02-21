@@ -5,6 +5,9 @@ from wpilib.command import CommandGroup
 
 from commands.drive_encoder_counts import DriveEncoderCounts
 from commands.drive_time import DriveTime
+from commands.move_elevator_time import MoveElevatorTime
+from commands.set_elevator_to_position import SetElevatorToPosition
+from commands.shoot_load import ShootLoad
 from commands.turn_degrees import TurnDegrees
 from commands.turn_time import TurnTime
 from robot import MyRobot
@@ -20,6 +23,59 @@ class Goal(Enum):
         obj.drive_config_section = drive_section
         obj.place_config_section = place_section
         return obj
+
+
+class TurnDirection(Enum):
+    counter_clockwise = -1
+    clockwise = 1
+
+
+class ElevatorDirection(Enum):
+    up = 1
+    down = -1
+
+
+class StartingPosition(Enum):
+    left = 1
+    center = 2
+    right = 3
+
+
+class FieldConfig(Enum):
+    LLL = 1
+    RRR = 2
+    LRL = 3
+    RLR = 4
+
+
+class AutoPlaceCube(CommandGroup):
+
+    def __init__(self,
+                 robot: MyRobot,
+                 field_config: FieldConfig,
+                 starting_position: StartingPosition):
+        super().__init__()
+        self.addSequential(CrossLine(robot))
+
+        goal = None
+        turn_direction = None
+
+        if starting_position == StartingPosition.left:
+            turn_direction = TurnDirection.clockwise
+            if (field_config == FieldConfig.LLL) or (field_config == FieldConfig.RLR):
+                goal = Goal.scale
+            elif field_config == FieldConfig.LRL:
+                goal = Goal.switch
+        elif starting_position == StartingPosition.right:
+            turn_direction = TurnDirection.counter_clockwise
+            if (field_config == FieldConfig.RRR) or (field_config == FieldConfig.LRL):
+                goal = Goal.scale
+            elif field_config == FieldConfig.RLR:
+                goal = Goal.switch
+
+        if goal is not None:
+            self.addSequential(DriveLineToGoal(robot, turn_direction, goal))
+            self.addSequential(PlaceCube(robot, goal))
 
 
 class CrossLine(CommandGroup):
@@ -51,7 +107,7 @@ class CrossLine(CommandGroup):
         self._drive_time = parser.getfloat(self._SECTION, self._TIME)
 
     def initialize(self):
-        if use_encoder(self._robot):
+        if use_drive_encoder(self._robot):
             command = DriveEncoderCounts(self._robot,
                                          self._drive_distance,
                                          self._drive_speed,
@@ -74,6 +130,9 @@ class PlaceCube(CommandGroup):
     _LIFT_THRESHOLD_KEY = "LIFT_THRESHOLD"
     _LIFT_TIME_KEY = "LIFT_TIME"
 
+    _RELEASE_TIME_KEY = "RELEASE_TIME"
+    _RELEASE_SPEED_KEY = "RELEASE_SPEED"
+
     _robot: MyRobot = None
 
     _drive_speed: float = None
@@ -86,6 +145,9 @@ class PlaceCube(CommandGroup):
     _lift_time: float = None
     _lift_threshold: int = None
 
+    _shoot_time: float = None
+    _shoot_speed: float = None
+
     def __init__(self,
                  robot: MyRobot,
                  goal: Goal,
@@ -97,7 +159,58 @@ class PlaceCube(CommandGroup):
         self._load_config(config, goal)
 
     def initialize(self):  # do some stuff here when james merges stuff
-        pass
+
+        if use_elevator_encoder(self._robot):
+            lift_command = SetElevatorToPosition(self._robot,
+                                                 self._lift_speed,
+                                                 self._lift_height,
+                                                 self._lift_threshold)
+        else:
+            lift_command = MoveElevatorTime(self._robot,
+                                            self._lift_speed * ElevatorDirection.up,
+                                            self._lift_time)
+
+        self.addSequential(lift_command)
+
+        if use_drive_encoder(self._robot):
+            forward_command = DriveEncoderCounts(self._robot,
+                                                 self._drive_distance,
+                                                 self._drive_speed,
+                                                 self._drive_threshold)
+        else:
+            forward_command = DriveTime(self._robot,
+                                        self._drive_time,
+                                        self._drive_speed)
+
+        self.addSequential(forward_command)
+
+        self.addSequential(ShootLoad(self._robot,
+                                     self._shoot_time,
+                                     self._shoot_speed))
+
+        if use_drive_encoder(self._robot):
+            reverse_command = DriveEncoderCounts(self._robot,
+                                                 self._drive_distance,
+                                                 self._drive_speed,
+                                                 self._drive_threshold)
+        else:
+            reverse_command = DriveTime(self._robot,
+                                        self._drive_time,
+                                        self._drive_speed)
+
+        self.addSequential(reverse_command)
+
+        if use_elevator_encoder(self._robot):
+            lower_command = SetElevatorToPosition(self._robot,
+                                                  self._lift_speed,
+                                                  0,
+                                                  self._lift_threshold)
+        else:
+            lower_command = MoveElevatorTime(self._robot,
+                                             self._lift_speed * ElevatorDirection.up,
+                                             self._lift_time)
+
+        self.addSequential(lower_command)
 
     def _load_config(self, parser: ConfigParser, goal: Goal):
         self._drive_speed = parser.getfloat(goal.place_config_section, self._SPEED_KEY)
@@ -124,6 +237,7 @@ class DriveLineToGoal(CommandGroup):
     _TURN_DEGREES = "TURN_DEGREES"
 
     _robot: MyRobot = None
+    _turn_direction: TurnDirection = None
 
     _drive_speed: float = None
     _turn_speed: float = None
@@ -140,16 +254,18 @@ class DriveLineToGoal(CommandGroup):
 
     def __init__(self,
                  robot: MyRobot,
+                 direction: TurnDirection,
                  goal: Goal,
                  config_path: str="/home/lvuser/py/configs/autonomous.ini"):
         super().__init__()
         self._robot = robot
+        self._turn_direction = direction
         config = ConfigParser()
         config.read(config_path)
         self._load_config(config, goal)
 
     def initialize(self):
-        if use_encoder(self._robot):
+        if use_drive_encoder(self._robot):
             forward_command = DriveEncoderCounts(self._robot,
                                                  self._distance_forward,
                                                  self._drive_speed,
@@ -161,19 +277,19 @@ class DriveLineToGoal(CommandGroup):
 
         self.addSequential(forward_command)
 
-        if use_gyro(self._robot):
+        if use_drive_gyro(self._robot):
             turn_command = TurnDegrees(self._robot,
-                                       self._turn_degrees,
+                                       self._turn_degrees * self._turn_direction,
                                        self._turn_speed,
                                        self._encoder_threshold)
         else:
             turn_command = TurnTime(self._robot,
                                     self._turn_time,
-                                    self._turn_speed)
+                                    self._turn_speed * self._turn_direction)
 
         self.addSequential(turn_command)
 
-        if use_encoder(self._robot):
+        if use_drive_encoder(self._robot):
             lateral_command = DriveEncoderCounts(self._robot,
                                                  self._distance_lateral,
                                                  self._drive_speed,
@@ -200,9 +316,13 @@ class DriveLineToGoal(CommandGroup):
         self._turn_time = config_parser.getfloat(goal.drive_config_section, self._TURN_TIME)
 
 
-def use_encoder(robot: MyRobot) -> bool:
+def use_drive_encoder(robot: MyRobot) -> bool:
     return robot.drivetrain.is_encoder_enabled()
 
 
-def use_gyro(robot: MyRobot) -> bool:
+def use_drive_gyro(robot: MyRobot) -> bool:
     return robot.drivetrain.is_gyro_enabled()
+
+
+def use_elevator_encoder(robot: MyRobot) -> bool:
+    return robot.elevator.is_encoder_enabled()
