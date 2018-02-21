@@ -23,9 +23,9 @@ class SetElevatorToPosition(Command):
         distance_left = self._encoder_target - current
         # Determine direction using target and current encoder values
         if distance_left >= 0:
-            direction = -1.0
-        else:
             direction = 1.0
+        else:
+            direction = -1.0
         directional_speed = self._speed * direction
         self.robot.elevator.move_elevator(directional_speed)
         return Command.execute(self)
