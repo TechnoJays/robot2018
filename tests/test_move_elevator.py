@@ -91,7 +91,7 @@ def test_execute(robot, mock_oi, hal_data, elevator_default, user_input, ex_spee
     me = MoveElevator(robot, None, None)
     assert me is not None
     me.initialize()
-    mock_oi.set_mock_axis_value(oi.UserController.SCORING, oi.JoystickAxis.RIGHTX, user_input)
+    mock_oi.set_mock_axis_value(oi.UserController.SCORING, oi.JoystickAxis.LEFTY, user_input)
     me.execute()
     assert hal_data['pwm'][3]['value'] == ex_speed
 

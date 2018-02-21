@@ -133,7 +133,7 @@ def test_execute(mock_oi, drivetrain_default, robot, hal_data, stick_scale, dpad
     mock_oi.set_mock_axis_value(oi.UserController.DRIVER, oi.JoystickAxis.LEFTY, left_input)
     mock_oi.set_mock_axis_value(oi.UserController.DRIVER, oi.JoystickAxis.RIGHTY, right_input)
     mock_oi.set_mock_axis_value(oi.UserController.DRIVER, oi.JoystickAxis.DPADY, dpad_input)
-    mock_oi.set_mock_button_value(oi.UserController.DRIVER, oi.JoystickButtons.RIGHTTRIGGER, modifier_input)
+    mock_oi.set_mock_button_value(oi.UserController.DRIVER, oi.JoystickButtons.LEFTTRIGGER, modifier_input)
     td.execute()
     assert hal_data['pwm'][1]['value'] == left_ex_speed
     assert hal_data['pwm'][2]['value'] == right_ex_speed
