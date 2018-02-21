@@ -3,7 +3,8 @@ import wpilib
 from wpilib.smartdashboard import SmartDashboard
 from wpilib.sendablechooser import SendableChooser
 from wpilib.buttons.joystickbutton import JoystickButton
-
+from commands.move_arm_laterally import MoveArmLaterally
+from commands.move_arms_vertically import MoveArmsVertically
 
 class JoystickAxis(object):
     """Enumerates joystick axis."""
@@ -46,6 +47,8 @@ class OI:
     _auto_program_chooser = None
     _starting_chooser = None
 
+    FULL_SPEED_AHEAD: float = 1.0
+
     def __init__(self, robot, configfile='/home/lvuser/py/configs/joysticks.ini'):
         self.robot = robot
         self._config = configparser.ConfigParser()
@@ -60,7 +63,16 @@ class OI:
     def setup_button_bindings(self):
         #release_gear_a_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
         #release_gear_a_button.whileHeld(ReleaseGear(self.robot))
-        pass
+
+        open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
+        open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
+        close_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
+        close_arm_button.whileHeld(MoveArmLaterally(self.robot, -self.FULL_SPEED_AHEAD))
+
+        raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
+        raise_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_AHEAD))
+        lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
+        lower_arms_button.whileHeld(MoveArmsVertically(self.robot, -self.FULL_SPEED_AHEAD))
 
     def get_axis(self, user, axis):
         """Read axis value for specified controller/axis.
@@ -124,9 +136,7 @@ class OI:
 
     def _init_joystick(self, driver):
         config_section = "JoyConfig" + str(driver)
-        stick = wpilib.Joystick(self._config.getint(config_section, "PORT"),
-                                self._config.getint(config_section, "AXES"),
-                                self._config.getint(config_section, "BUTTONS"))
+        stick = wpilib.Joystick(self._config.getint(config_section, "PORT"))
         return stick
 
     def _init_joystick_binding(self):
