@@ -4,6 +4,7 @@ from commands.move_arms_vertically import MoveArmsVertically
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
+from wpilib.smartdashboard import SmartDashboard
 
 
 class Arm(Subsystem):
@@ -47,6 +48,7 @@ class Arm(Subsystem):
         self._config = ConfigParser()
         self._config.read(os.path.join(os.getcwd(), configfile))
         self._init_components()
+        self._update_smartdashboard()
 
     def _initDefaultCommand(self):
         self.setDefaultCommand(MoveArmsVertically(self._robot))
@@ -59,7 +61,7 @@ class Arm(Subsystem):
 
     def is_lowered(self) -> bool:
         if self._lowered_switch:
-            return self._lowered_switch.get()
+            return not self._lowered_switch.get()
         else:
             return False
 
@@ -71,7 +73,7 @@ class Arm(Subsystem):
 
     def is_open(self) -> bool:
         if self._opened_switch:
-            return self._opened_switch.get()
+            return not self._opened_switch.get()
         else:
             return False
 
@@ -83,6 +85,7 @@ class Arm(Subsystem):
                 self._lateral_motor.set(speed * self._move_speed_scale)
             else:
                 self._lateral_motor.set(0.0)
+        self._update_smartdashboard()
 
 
     def move_arms_vertically(self, speed: float) -> None:
@@ -93,6 +96,13 @@ class Arm(Subsystem):
                 self._vertical_motor.set(speed * self._move_speed_scale)
             else:
                 self._lateral_motor.set(0.0)
+        self._update_smartdashboard()
+
+    def _update_smartdashboard(self):
+        SmartDashboard.putBoolean("Arm is raised", self.is_raised())
+        SmartDashboard.putBoolean("Arm is lowered", self.is_lowered())
+        SmartDashboard.putBoolean("Arm is closed", self.is_closed())
+        SmartDashboard.putBoolean("Arm is open", self.is_open())
 
     def _init_components(self) -> None:
         if self._config.getfloat(self._general_section, self._move_speed_scale_key) is not None:

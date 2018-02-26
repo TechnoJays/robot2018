@@ -42,7 +42,7 @@ class Feeder(Subsystem):
 
     def has_cube(self) -> bool:
         if self._switch:
-            return self._switch.get()
+            return not self._switch.get()
         else:
             return False
 
