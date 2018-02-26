@@ -1,4 +1,3 @@
-import os
 from configparser import ConfigParser
 from commands.feed_cube import FeedCube
 from wpilib.command.subsystem import Subsystem
@@ -30,11 +29,11 @@ class Feeder(Subsystem):
     _pickup_speed_scale: float = 0.0
     _shoot_speed_scale: float = 0.0
 
-    def __init__(self, robot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot, name=None, configfile: str='/home/lvuser/py/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
         self._config = ConfigParser()
-        self._config.read(os.path.join(os.getcwd(), configfile))
+        self._config.read(configfile)
         self._init_components()
         self._update_smartdashboard()
 
