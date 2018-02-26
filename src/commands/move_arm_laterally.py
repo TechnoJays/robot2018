@@ -5,7 +5,7 @@ class MoveArmLaterally(Command):
     def __init__(self, robot, speed: float=0.0, name=None, timeout=5):
         super().__init__(name, timeout)
         self.robot = robot
-        self._arm_speed: float = speed
+        self._arm_speed: float = speed * -1.0
         self.requires(robot.arm)
 
     def initialize(self):
@@ -19,9 +19,9 @@ class MoveArmLaterally(Command):
 
     def isFinished(self):
         """Returns true when the Command no longer needs to be run"""
-        if self._arm_speed > 0.0:
+        if self._arm_speed < 0.0:
             return self.robot.arm.is_open()
-        elif self._arm_speed < 0.0:
+        elif self._arm_speed > 0.0:
             return self.robot.arm.is_closed()
         else:
             return False
