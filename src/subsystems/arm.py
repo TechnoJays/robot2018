@@ -41,7 +41,7 @@ class Arm(Subsystem):
 
     _move_speed_scale: float = 1.0
 
-    def __init__(self, robot, name=None, configfile: str='/home/lvuser/configs/subsystems.ini'):
+    def __init__(self, robot, name=None, configfile: str='/home/lvuser/py/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
         self._config = ConfigParser()
