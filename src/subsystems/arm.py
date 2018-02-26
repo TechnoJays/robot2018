@@ -78,9 +78,9 @@ class Arm(Subsystem):
 
     def move_arm_laterally(self, speed: float) -> None:
         if self._lateral_motor:
-            if speed < 0.0 and not self.is_closed():
+            if speed < 0.0:
                 self._lateral_motor.set(speed * self._move_speed_scale)
-            elif speed > 0.0 and not self.is_open():
+            elif speed > 0.0:
                 self._lateral_motor.set(speed * self._move_speed_scale)
             else:
                 self._lateral_motor.set(0.0)
@@ -89,9 +89,9 @@ class Arm(Subsystem):
 
     def move_arms_vertically(self, speed: float) -> None:
         if self._vertical_motor:
-            if speed > 0.0 and not self.is_raised():
+            if speed > 0.0:
                 self._vertical_motor.set(speed * self._move_speed_scale)
-            elif speed < 0.0 and not self.is_lowered():
+            elif speed < 0.0:
                 self._vertical_motor.set(speed * self._move_speed_scale)
             else:
                 self._lateral_motor.set(0.0)
