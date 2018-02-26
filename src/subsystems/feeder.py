@@ -48,10 +48,10 @@ class Feeder(Subsystem):
 
     def feed_cube(self, speed: float):
         if self._motor:
-            if speed > 0.0:
+            if speed < 0.0:
                 speed = speed * self._shoot_speed_scale
                 self._motor.set(speed)
-            elif speed < 0.0 and not self.has_cube():
+            elif speed > 0.0 and not self.has_cube():
                 speed = speed * self._pickup_speed_scale
                 self._motor.set(speed)
             else:
