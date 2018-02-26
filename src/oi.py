@@ -65,16 +65,14 @@ class OI:
         #release_gear_a_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
         #release_gear_a_button.whileHeld(ReleaseGear(self.robot))
 
-        # open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
-        # open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
-        # close_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
-        # close_arm_button.whileHeld(MoveArmLaterally(self.robot, -self.FULL_SPEED_AHEAD))
+        open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
+        open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
+        close_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
+        close_arm_button.whileHeld(MoveArmLaterally(self.robot, -self.FULL_SPEED_AHEAD))
 
-        # raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
-        raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
+        raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
         raise_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_AHEAD))
-        # lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
-        lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
+        lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
         lower_arms_button.whileHeld(MoveArmsVertically(self.robot, -self.FULL_SPEED_AHEAD))
 
         raise_winch_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.LEFTBUMPER)
