@@ -1,4 +1,3 @@
-import os
 from configparser import ConfigParser
 from commands.move_arms_vertically import MoveArmsVertically
 from wpilib.command.subsystem import Subsystem
@@ -46,7 +45,7 @@ class Arm(Subsystem):
         super().__init__(name=name)
         self._robot = robot
         self._config = ConfigParser()
-        self._config.read(os.path.join(os.getcwd(), configfile))
+        self._config.read(configfile)
         self._init_components()
         self._update_smartdashboard()
 
@@ -55,7 +54,7 @@ class Arm(Subsystem):
 
     def is_raised(self) -> bool:
         if self._raised_switch:
-            return self._raised_switch.get()
+            return not self._raised_switch.get()
         else:
             return False
 

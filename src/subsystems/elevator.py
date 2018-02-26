@@ -76,7 +76,7 @@ class Elevator(Subsystem):
     def _init_components(self):
 
         config = configparser.ConfigParser()
-        config.read(os.path.join(os.getcwd(), self._subsystem_config))
+        config.read(self._subsystem_config)
 
         if config.getboolean(self.MOTOR_SECTION, self.ENABLED):
             motor_channel = config.getint(self.MOTOR_SECTION, self.CHANNEL)
