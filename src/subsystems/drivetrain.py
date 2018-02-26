@@ -70,7 +70,7 @@ class Drivetrain(Subsystem):
         super().__init__(name=name)
 
     def initDefaultCommand(self):
-        self.setDefaultCommand(TankDrive(self._robot, self._robot.oi, modifier_scaling=self._modifier_scaling,
+        self.setDefaultCommand(TankDrive(self._robot, 'TankDrive', modifier_scaling=self._modifier_scaling,
                                          dpad_scaling=self._dpad_scaling))
 
     def get_left_encoder_value(self):

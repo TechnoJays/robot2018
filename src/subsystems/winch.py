@@ -34,7 +34,7 @@ class Winch(Subsystem):
         super().__init__(name=name)
 
     def initDefaultCommand(self):
-        self.setDefaultCommand(MoveWinch(self._robot))
+        self.setDefaultCommand(MoveWinch(self._robot, 0.0))
 
     def move_winch(self, speed):
         if self._motor:
