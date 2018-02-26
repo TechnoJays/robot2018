@@ -78,23 +78,13 @@ class Arm(Subsystem):
 
     def move_arm_laterally(self, speed: float) -> None:
         if self._lateral_motor:
-            if speed < 0.0:
-                self._lateral_motor.set(speed * self._move_speed_scale)
-            elif speed > 0.0:
-                self._lateral_motor.set(speed * self._move_speed_scale)
-            else:
-                self._lateral_motor.set(0.0)
+            self._lateral_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
 
     def move_arms_vertically(self, speed: float) -> None:
         if self._vertical_motor:
-            if speed > 0.0:
-                self._vertical_motor.set(speed * self._move_speed_scale)
-            elif speed < 0.0:
-                self._vertical_motor.set(speed * self._move_speed_scale)
-            else:
-                self._lateral_motor.set(0.0)
+            self._vertical_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
     def _update_smartdashboard(self):
