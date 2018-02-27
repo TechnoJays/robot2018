@@ -1,5 +1,6 @@
 from wpilib.command.command import Command
 
+
 class MoveArmLaterally(Command):
 
     def __init__(self, robot, speed: float=0.0, name=None, timeout=5):
@@ -19,12 +20,7 @@ class MoveArmLaterally(Command):
 
     def isFinished(self):
         """Returns true when the Command no longer needs to be run"""
-        if self._arm_speed < 0.0:
-            return self.robot.arm.is_open()
-        elif self._arm_speed > 0.0:
-            return self.robot.arm.is_closed()
-        else:
-            return False
+        return False
 
     def end(self):
         """Called once after isFinished returns true"""

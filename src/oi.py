@@ -65,7 +65,7 @@ class OI:
         self._create_smartdashboard_buttons()
 
     def setup_button_bindings(self):
-        toggle_bounds_checking_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.START)
+        toggle_bounds_checking_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
         toggle_bounds_checking_button.whenPressed(ToggleBoundsChecking(self))
 
         open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
@@ -141,6 +141,7 @@ class OI:
 
     def toggle_bounds_checking_enabled(self):
         self._bounds_checking_enabled = not self._bounds_checking_enabled
+        SmartDashboard.putBoolean("Bounds checking enabled", self.is_bounds_checking_enabled())
 
     def get_auto_choice(self):
         return self._auto_program_chooser.getSelected()
