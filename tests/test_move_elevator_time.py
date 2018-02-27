@@ -2,10 +2,13 @@ import pytest
 from subsystems.elevator import Elevator
 from commands.move_elevator_time import MoveElevatorTime
 from stopwatch import Stopwatch
+from oi import OI
 
 
 @pytest.fixture(scope="function")
 def elevator_default(robot):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     return Elevator(robot, None, '../tests/test_configs/elevator_default.ini')
 
 

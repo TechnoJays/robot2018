@@ -1,5 +1,6 @@
 import pytest
 from subsystems.elevator import Elevator
+from oi import OI
 
 """
 hal_data['pwm'] looks like this:
@@ -23,6 +24,8 @@ hal_data['pwm'] looks like this:
 
 @pytest.fixture(scope="function")
 def elevator_default(robot):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     return Elevator(robot, None, '../tests/test_configs/elevator_default.ini')
 
 
@@ -33,9 +36,12 @@ def isclose(a, b, rel_tol=0.1, abs_tol=0.0):
 def test_elevator_default(elevator_default):
     assert elevator_default is not None
     assert elevator_default._motor is not None
+    assert elevator_default._oi is not None
 
 
 def test_elevator_channel_4(robot, hal_data):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_channel_4.ini')
     assert elevtr is not None
     assert elevtr._motor is not None
@@ -44,6 +50,8 @@ def test_elevator_channel_4(robot, hal_data):
 
 
 def test_elevator_channel_5(robot, hal_data):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_channel_5.ini')
     assert elevtr is not None
     assert elevtr._motor is not None
@@ -59,6 +67,8 @@ def test_elevator_channel_5(robot, hal_data):
     (-1.0, -1.0),
 ])
 def test_elevator_full_speed(robot, hal_data, speed, ex_speed):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_default.ini')
     assert elevtr is not None
     assert elevtr._motor is not None
@@ -74,6 +84,8 @@ def test_elevator_full_speed(robot, hal_data, speed, ex_speed):
     (-1.0, -0.5),
 ])
 def test_elevator_scaled(robot, hal_data, speed, ex_speed):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_scaled.ini')
     assert elevtr is not None
     assert elevtr._motor is not None
@@ -91,6 +103,8 @@ def test_elevator_scaled(robot, hal_data, speed, ex_speed):
     (10, -1.0, 0.0),
 ])
 def test_elevator_encoder_bounds(robot, hal_data, current_count, speed, ex_speed):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_encoder_bounds.ini')
     assert elevtr is not None
     assert elevtr._motor is not None
@@ -100,6 +114,8 @@ def test_elevator_encoder_bounds(robot, hal_data, current_count, speed, ex_speed
 
 
 def test_elevator_inverted(robot, hal_data):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_inverted.ini')
     assert elevtr is not None
     assert elevtr._motor is not None
@@ -109,6 +125,8 @@ def test_elevator_inverted(robot, hal_data):
 
 
 def test_elevator_disabled(robot):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     elevtr = Elevator(robot, None, '../tests/test_configs/elevator_disabled.ini')
     assert elevtr is not None
     assert elevtr._motor is None

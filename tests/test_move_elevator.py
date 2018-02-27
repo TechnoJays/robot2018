@@ -3,12 +3,6 @@ import oi
 from subsystems.elevator import Elevator
 from commands.move_elevator import MoveElevator
 
-
-@pytest.fixture(scope="function")
-def elevator_default(robot):
-    return Elevator(robot, None, '../tests/test_configs/elevator_default.ini')
-
-
 @pytest.fixture(scope="function")
 def mock_oi(robot):
     class OI:
@@ -46,7 +40,15 @@ def mock_oi(robot):
         def get_button_state(self, user, button):
             return self.button_values[user][button]
 
+        def is_bounds_checking_enabled(self):
+            return False
+
     return OI()
+
+@pytest.fixture(scope="function")
+def elevator_default(robot, mock_oi):
+    robot.oi = mock_oi
+    return Elevator(robot, None, '../tests/test_configs/elevator_default.ini')
 
 
 @pytest.fixture(scope="function")
@@ -80,10 +82,10 @@ def test_initialize(command_default):
 @pytest.mark.parametrize(
     "user_input,ex_speed", [
         (0.0, 0.0),
-        (0.5, 0.5),
-        (1.0, 1.0),
-        (-0.5, -0.5),
-        (-1.0, -1.0),
+        (0.5, -0.5),
+        (1.0, -1.0),
+        (-0.5, 0.5),
+        (-1.0, 1.0),
     ])
 def test_execute(robot, mock_oi, hal_data, elevator_default, user_input, ex_speed):
     robot.elevator = elevator_default

@@ -1,6 +1,7 @@
 import pytest
 from commands.raise_elevator_to_position import RaiseElevatorToPosition
 from subsystems.elevator import Elevator
+from oi import OI
 
 
 """
@@ -25,6 +26,8 @@ hal_data['pwm'] looks like this:
 
 @pytest.fixture(scope="function")
 def elevator_default(robot):
+    oi_default = OI(robot, '../tests/test_configs/elevator_default.ini')
+    robot.oi = oi_default
     return Elevator(robot, None, '../tests/test_configs/elevator_encoder_bounds.ini')
 
 
