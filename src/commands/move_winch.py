@@ -7,7 +7,7 @@ class MoveWinch(Command):
         """Constructor"""
         super().__init__(name, timeout)
         self.robot = robot
-        self.motor_speed = speed
+        self.motor_speed = speed * -1.0
         self.requires(robot.winch)
 
     def initialize(self):
