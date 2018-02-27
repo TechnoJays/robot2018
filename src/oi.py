@@ -6,6 +6,8 @@ from wpilib.buttons.joystickbutton import JoystickButton
 from commands.move_arm_laterally import MoveArmLaterally
 from commands.move_arms_vertically import MoveArmsVertically
 from commands.move_winch import MoveWinch
+from commands.toggle_bounds_checking import ToggleBoundsChecking
+
 
 class JoystickAxis(object):
     """Enumerates joystick axis."""
@@ -47,6 +49,7 @@ class OI:
     _controllers = []
     _auto_program_chooser = None
     _starting_chooser = None
+    _bounds_checking_enabled = True
 
     FULL_SPEED_AHEAD: float = 1.0
 
@@ -62,8 +65,8 @@ class OI:
         self._create_smartdashboard_buttons()
 
     def setup_button_bindings(self):
-        #release_gear_a_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
-        #release_gear_a_button.whileHeld(ReleaseGear(self.robot))
+        toggle_bounds_checking_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.START)
+        toggle_bounds_checking_button.whenPressed(ToggleBoundsChecking(self))
 
         open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
         open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
@@ -132,6 +135,12 @@ class OI:
         self._starting_chooser.addObject("Center", 2)
         self._starting_chooser.addObject("Right", 3)
         SmartDashboard.putData("Starting_Position", self._starting_chooser)
+
+    def is_bounds_checking_enabled(self):
+        return self._bounds_checking_enabled
+
+    def toggle_bounds_checking_enabled(self):
+        self._bounds_checking_enabled = not self._bounds_checking_enabled
 
     def get_auto_choice(self):
         return self._auto_program_chooser.getSelected()
