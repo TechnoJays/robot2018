@@ -44,6 +44,7 @@ class Arm(Subsystem):
     def __init__(self, robot, name=None, configfile: str='/home/lvuser/py/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
+        self._oi = robot.oi
         self._config = ConfigParser()
         self._config.read(configfile)
         self._init_components()
@@ -53,25 +54,25 @@ class Arm(Subsystem):
         self.setDefaultCommand(MoveArmsVertically(self._robot))
 
     def is_raised(self) -> bool:
-        if self._raised_switch:
+        if self._oi.is_bounds_checking_enabled() and self._raised_switch:
             return not self._raised_switch.get()
         else:
             return False
 
     def is_lowered(self) -> bool:
-        if self._lowered_switch:
+        if self._oi.is_bounds_checking_enabled() and self._lowered_switch:
             return not self._lowered_switch.get()
         else:
             return False
 
     def is_closed(self) -> bool:
-        if self._closed_switch:
+        if self._oi.is_bounds_checking_enabled() and self._closed_switch:
             return self._closed_switch.get()
         else:
             return False
 
     def is_open(self) -> bool:
-        if self._opened_switch:
+        if self._oi.is_bounds_checking_enabled() and self._opened_switch:
             return not self._opened_switch.get()
         else:
             return False

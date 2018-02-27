@@ -34,6 +34,7 @@ class Elevator(Subsystem):
 
     def __init__(self, robot, name=None, configfile='/home/lvuser/py/configs/subsystems.ini'):
         self._robot = robot
+        self._oi = robot.oi
         self._subsystem_config = configfile
         self._init_components()
         self._update_smartdashboard(0.0)
@@ -46,7 +47,7 @@ class Elevator(Subsystem):
         self.get_encoder_value()
         if not self._motor:
             return
-        if self._encoder and self._encoder_top_bound and self._encoder_bottom_bound:
+        if self._oi.is_bounds_checking_enabled() and self._encoder and self._encoder_top_bound and self._encoder_bottom_bound:
             if (speed > 0 and self._encoder_value >= self._encoder_top_bound) or \
                (speed < 0 and self._encoder_value <= self._encoder_bottom_bound):
                 return
