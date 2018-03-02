@@ -98,6 +98,7 @@ class CrossLine(CommandGroup):
         config = ConfigParser()
         config.read(config_path)
         self._load_config(config)
+        self._initialize_commands()
 
     def _load_config(self, parser: ConfigParser):
         self._drive_speed = parser.getfloat(self._SECTION, self._SPEED)
@@ -105,7 +106,7 @@ class CrossLine(CommandGroup):
         self._drive_threshold = parser.getint(self._SECTION, self._DISTANCE_THRESHOLD)
         self._drive_time = parser.getfloat(self._SECTION, self._TIME)
 
-    def initialize(self):
+    def _initialize_commands(self):
         if use_drive_encoder(self._robot):
             command = DriveEncoderCounts(self._robot,
                                          self._drive_distance,
@@ -156,8 +157,9 @@ class PlaceCube(CommandGroup):
         config = ConfigParser()
         config.read(config_path)
         self._load_config(config, goal)
+        self._initialize_commands()
 
-    def initialize(self):  # do some stuff here when james merges stuff
+    def _initialize_commands(self):  # do some stuff here when james merges stuff
 
         if use_elevator_encoder(self._robot):
             lift_command = SetElevatorToPosition(self._robot,
@@ -262,8 +264,9 @@ class DriveLineToGoal(CommandGroup):
         config = ConfigParser()
         config.read(config_path)
         self._load_config(config, goal)
+        self._initialize_commands()
 
-    def initialize(self):
+    def _initialize_commands(self):
         if use_drive_encoder(self._robot):
             forward_command = DriveEncoderCounts(self._robot,
                                                  self._distance_forward,
