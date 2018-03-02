@@ -51,8 +51,7 @@ class Arm(Subsystem):
         self._update_smartdashboard()
 
     def _initDefaultCommand(self):
-        # self.setDefaultCommand(MoveArmsVertically(self._robot))
-        pass
+        self.setDefaultCommand(MoveArmsVertically(self._robot))
 
     def is_raised(self) -> bool:
         if self._oi.is_bounds_checking_enabled() and self._raised_switch:
@@ -79,23 +78,14 @@ class Arm(Subsystem):
             return False
 
     def move_arm_laterally(self, speed: float) -> None:
-        if not self._lateral_motor:
-            return
-        if speed < 0.0 and self.is_open():
-            return
-        elif speed > 0.0 and self.is_closed():
-            return
-        self._lateral_motor.set(speed * self._move_speed_scale)
+        if self._lateral_motor:
+            self._lateral_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
+
     def move_arms_vertically(self, speed: float) -> None:
-        if not self._vertical_motor:
-            return
-        if speed > 0.0 and self.is_raised():
-            return
-        elif speed < 0.0 and self.is_lowered():
-            return
-        self._vertical_motor.set(speed * self._move_speed_scale)
+        if self._vertical_motor:
+            self._vertical_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
     def _update_smartdashboard(self):
