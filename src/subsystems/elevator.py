@@ -43,15 +43,11 @@ class Elevator(Subsystem):
         self.setDefaultCommand(MoveElevator(self._robot))
 
     def move_elevator(self, speed):
-        self.get_encoder_value()
         if not self._motor:
             return
-        if self._encoder and self._encoder_top_bound and self._encoder_bottom_bound:
-            if (speed > 0 and self._encoder_value >= self._encoder_top_bound) or \
-               (speed < 0 and self._encoder_value <= self._encoder_bottom_bound):
-                return
         scaled_speed = speed * self._speed_scaling
         self._motor.setSpeed(scaled_speed)
+        self.get_encoder_value()
         self._update_smartdashboard(scaled_speed)
 
     def is_encoder_enabled(self):
