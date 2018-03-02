@@ -32,7 +32,6 @@ class Feeder(Subsystem):
     def __init__(self, robot, name=None, configfile: str='/home/lvuser/py/configs/subsystems.ini'):
         super().__init__(name=name)
         self._robot = robot
-        self._oi = robot.oi
         self._config = ConfigParser()
         self._config.read(configfile)
         self._init_components()
@@ -42,7 +41,7 @@ class Feeder(Subsystem):
         self.setDefaultCommand(FeedCube(self._robot))
 
     def has_cube(self) -> bool:
-        if self._oi.is_bounds_checking_enabled() and self._switch:
+        if self._switch:
             return not self._switch.get()
         else:
             return False
