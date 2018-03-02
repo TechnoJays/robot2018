@@ -62,7 +62,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.feeder = Feeder(self)
         self.winch = Winch(self)
         self.oi.setup_button_bindings()
-        wpilib.CameraServer.launch()
+        # wpilib.CameraServer.launch()
 
     def autonomousPeriodic(self):
         """This function is called periodically during autonomous."""
