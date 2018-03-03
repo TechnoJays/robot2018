@@ -25,18 +25,19 @@ class MyRobot(wpilib.IterativeRobot):
         self.drivetrain.reset_gyro_angle()
 
         # Determine starting position and filed config
-        starting_position = StartingPosition(self.oi.get_position())
-        game_message = wpilib.DriverStation.getGameSpecificMessage()
-        field_config = FieldConfig[game_message]
-
-        auto_choice = self.oi.get_auto_choice()
-
-        if auto_choice == 1:
-            self.autonomous_command = CrossLine(self)
-        elif auto_choice == 2:
-            self.autonomous_command = AutoPlaceCube(self, field_config, starting_position)
-        else:
-            self.autonomous_command = DoNothing(self)
+        # starting_position = StartingPosition(self.oi.get_position())
+        # game_message = wpilib.DriverStation.getGameSpecificMessage()
+        # field_config = FieldConfig[game_message]
+        #
+        # auto_choice = self.oi.get_auto_choice()
+        #
+        # if auto_choice == 1:
+        #     self.autonomous_command = CrossLine(self)
+        # elif auto_choice == 2:
+        #     self.autonomous_command = AutoPlaceCube(self, field_config, starting_position)
+        # else:
+        #     self.autonomous_command = DoNothing(self)
+        self.autonomous_command = CrossLine(self)
         self.autonomous_command.start()
 
     def testInit(self):
