@@ -77,14 +77,24 @@ class Arm(Subsystem):
             return False
 
     def move_arm_laterally(self, speed: float) -> None:
-        if self._lateral_motor:
-            self._lateral_motor.set(speed * self._move_speed_scale)
+        if not self._lateral_motor:
+            return
+        if speed < 0.0 and self.is_open():
+            return
+        elif speed > 0.0 and self.is_closed():
+            return
+        self._lateral_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
 
     def move_arms_vertically(self, speed: float) -> None:
-        if self._vertical_motor:
-            self._vertical_motor.set(speed * self._move_speed_scale)
+        if not self._vertical_motor:
+            return
+        if speed > 0.0 and self.is_raised():
+            return
+        elif speed < 0.0 and self.is_lowered():
+            return
+        self._vertical_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
     def _update_smartdashboard(self):
