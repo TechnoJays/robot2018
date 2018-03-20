@@ -3,6 +3,8 @@ import wpilib
 from wpilib.smartdashboard import SmartDashboard
 from wpilib.sendablechooser import SendableChooser
 from wpilib.buttons.joystickbutton import JoystickButton
+
+from commands.arm_commands import RaiseArms, LowerArms, CloseArms, OpenArms
 from commands.move_arm_laterally import MoveArmLaterally
 from commands.move_arms_vertically import MoveArmsVertically
 from commands.move_winch import MoveWinch
@@ -66,14 +68,14 @@ class OI:
         #release_gear_a_button.whileHeld(ReleaseGear(self.robot))
 
         open_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTBUMPER)
-        open_arm_button.whileHeld(MoveArmLaterally(self.robot, self.FULL_SPEED_AHEAD))
+        open_arm_button.whenPressed(OpenArms(self.robot))
         close_arm_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.RIGHTTRIGGER)
-        close_arm_button.whileHeld(MoveArmLaterally(self.robot, -self.FULL_SPEED_AHEAD))
+        close_arm_button.whenPressed(CloseArms(self.robot))
 
         raise_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.Y)
-        raise_arms_button.whileHeld(MoveArmsVertically(self.robot, self.FULL_SPEED_AHEAD))
+        raise_arms_button.whenPressed(RaiseArms(self.robot))
         lower_arms_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.A)
-        lower_arms_button.whileHeld(MoveArmsVertically(self.robot, -self.FULL_SPEED_AHEAD))
+        lower_arms_button.whenPressed(LowerArms(self.robot))
 
         raise_winch_button = JoystickButton(self._controllers[UserController.SCORING], JoystickButtons.LEFTBUMPER)
         raise_winch_button.whileHeld(MoveWinch(self.robot, self.FULL_SPEED_AHEAD))
