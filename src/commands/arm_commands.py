@@ -24,10 +24,9 @@ class OpenArms(Command):
         self._robot.arm.move_arm_laterally(0)
 
     def execute(self):
-        self._robot.arm.move_arm_laterally(1.0)
+        self._robot.arm.move_arm_laterally(-1.0)
 
     def isFinished(self):
-        STALL_PERIOD = 0.5
         is_finished = self._robot.arm.get_open_period() > STALL_PERIOD or self._robot.arm.get_open_count() >= OPEN_RANGE
         if is_finished:
             self._robot.arm.set_open(True)
@@ -50,7 +49,7 @@ class CloseArms(Command):
         self._robot.arm.move_arm_laterally(0)
 
     def execute(self):
-        self._robot.arm.move_arm_laterally(-1.0)
+        self._robot.arm.move_arm_laterally(1.0)
 
     def isFinished(self):
         is_finished = self._robot.arm.get_open_period() > STALL_PERIOD or self._robot.arm.get_open_count() >= OPEN_RANGE
