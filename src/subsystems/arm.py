@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 
-from wpilib import Counter
+from wpilib.counter import Counter
 
 from commands.move_arms_vertically import MoveArmsVertically
 from wpilib.command.subsystem import Subsystem
@@ -37,7 +37,7 @@ class Arm(Subsystem):
     _vertical_counter: Counter = None
 
     _is_lowered: bool = False
-    _is_open: bool = False
+    _is_open: bool = True
 
     _move_speed_scale: float = 1.0
 
@@ -56,19 +56,21 @@ class Arm(Subsystem):
         self._vertical_counter.reset()
 
     def get_vertical_count(self):
-        self._vertical_counter.get()
+        SmartDashboard.putNumber("Vertical Count", self._vertical_counter.get())
+        return self._vertical_counter.get()
 
     def get_vertical_period(self):
-        self._vertical_counter.getPeriod()
+        return self._vertical_counter.getPeriod()
 
     def reset_open_count(self):
         self._open_counter.reset()
 
     def get_open_count(self):
-        self._open_counter.get()
+        SmartDashboard.putNumber("Open Count", self._vertical_counter.get())
+        return self._open_counter.get()
 
     def get_open_period(self):
-        self._vertical_counter.getPeriod()
+        return self._vertical_counter.getPeriod()
 
     def is_lowered(self) -> bool:
         return self._is_lowered
@@ -132,10 +134,18 @@ class Arm(Subsystem):
 
         if self._config.getboolean(Arm._lowered_counter_section, Arm._enabled_key):
             self._lowered_counter_channel = self._config.getint(self._lowered_counter_section, self._channel_key)
+            print("Lowered Counter Channel: " + str(self._lowered_counter_channel))
+            dio = DigitalInput(self._lowered_counter_channel)
+            print("Lowered DigitalInput: " + str(dio))
             if self._lowered_counter_channel:
-                self._vertical_counter = Counter(DigitalInput(self._lowered_counter_channel))
+                self._vertical_counter = Counter(dio)
+                print("Lowered Counter: " + str(self._vertical_counter))
 
         if self._config.getboolean(Arm._open_counter_section, Arm._enabled_key):
             self._open_counter_channel = self._config.getint(self._open_counter_section, self._channel_key)
+            print("Open Counter Channel: " + str(self._open_counter_channel))
+            dio = DigitalInput(self._open_counter_channel)
+            print("Open DigitalInput: " + str(dio))
             if self._open_counter_channel:
-                self._open_counter = Counter(DigitalInput(self._open_counter_channel))
+                self._open_counter = Counter(dio)
+                print("Open Counter: " + str(self._open_counter))
