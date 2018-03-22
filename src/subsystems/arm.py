@@ -2,7 +2,7 @@ from configparser import ConfigParser
 
 from wpilib.counter import Counter
 
-from commands.move_arms_vertically import MoveArmsVertically
+from commands.arm_commands import MoveArmLol
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
@@ -49,8 +49,8 @@ class Arm(Subsystem):
         self._init_components()
         self._update_smartdashboard()
 
-    def _initDefaultCommand(self):
-        self.setDefaultCommand(MoveArmsVertically(self._robot, 0.0))
+    def initDefaultCommand(self):
+        self.setDefaultCommand(MoveArmLol(self._robot))
 
     def reset_vertical_count(self):
         self._vertical_counter.reset()

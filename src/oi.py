@@ -5,8 +5,6 @@ from wpilib.sendablechooser import SendableChooser
 from wpilib.buttons.joystickbutton import JoystickButton
 
 from commands.arm_commands import RaiseArms, LowerArms, CloseArms, OpenArms
-from commands.move_arm_laterally import MoveArmLaterally
-from commands.move_arms_vertically import MoveArmsVertically
 from commands.move_winch import MoveWinch
 
 class JoystickAxis(object):
