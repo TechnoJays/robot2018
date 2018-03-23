@@ -2,11 +2,12 @@ from configparser import ConfigParser
 
 from wpilib.counter import Counter
 
-from commands.arm_commands import MoveArmLol
 from wpilib.command.subsystem import Subsystem
 from wpilib.digitalinput import DigitalInput
 from wpilib.talon import Talon
 from wpilib.smartdashboard import SmartDashboard
+
+from commands.arm_default import MoveArmLol
 
 
 class Arm(Subsystem):
@@ -37,7 +38,7 @@ class Arm(Subsystem):
     _vertical_counter: Counter = None
 
     _is_lowered: bool = False
-    _is_open: bool = True
+    _is_open: bool = False
 
     _move_speed_scale: float = 1.0
 
@@ -89,19 +90,11 @@ class Arm(Subsystem):
     def move_arm_laterally(self, speed: float) -> None:
         if not self._lateral_motor:
             return
-        if speed < 0.0 and self._is_open:
-            return
-        elif speed > 0.0 and not self._is_open:
-            return
         self._lateral_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
 
     def move_arms_vertically(self, speed: float) -> None:
         if not self._vertical_motor:
-            return
-        if speed > 0.0 and not self._is_lowered:
-            return
-        elif speed < 0.0 and self._is_lowered:
             return
         self._vertical_motor.set(speed * self._move_speed_scale)
         self._update_smartdashboard()
